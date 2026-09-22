@@ -9,7 +9,7 @@ const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
 const NEXT_MERGE_DATE = 'October 6, 2026';
-const STORAGE_KEY = 'preptember.progress.v2';
+const STORAGE_KEY = 'preptember.progress.v3';
 
 const STEPS = [
   { id: 'star', tag: '01', title: `Star ${REPO}`, desc: 'takes 2 seconds', ctaText: 'Star it ↗', ctaHref: `https://github.com/${OWNER}/${REPO}` },
@@ -164,9 +164,6 @@ export default function Home() {
         setDone((prev) => {
           const next = { ...prev };
           if (j.starred) next.star = true;
-          if (j.forked) next.fork = true;
-          if (j.openPr || j.mergedPr) next.pr = true;
-          if (j.mergedPr) next.merged = true;
           return next;
         });
       }
@@ -332,17 +329,6 @@ Please write my Wall of Fame block now.`;
             <span className="chip">~20 minutes</span>
             <span className="chip">Real 169pi swag when merged</span>
           </div>
-
-          <div className="benchmarks" aria-label="Alpie-Core benchmarks">
-            <div className="benchmarks-label">Alpie-Core, in numbers</div>
-            <div className="benchmarks-grid">
-              <div className="bench"><span className="bench-num">92.75%</span><span className="bench-cap">GSM8K</span></div>
-              <div className="bench"><span className="bench-num">81.28%</span><span className="bench-cap">MMLU</span></div>
-              <div className="bench"><span className="bench-num">57.8%</span><span className="bench-cap">SWE-Bench Verified</span></div>
-              <div className="bench"><span className="bench-num">65K</span><span className="bench-cap">context</span></div>
-              <div className="bench"><span className="bench-num">~16 GB</span><span className="bench-cap">VRAM</span></div>
-            </div>
-          </div>
         </div>
 
         {/* Stats */}
@@ -381,6 +367,47 @@ Please write my Wall of Fame block now.`;
         </div>
       </div>
 
+      {/* Try Alpie-Core */}
+      <div className="try-wrap">
+        <div className="try-card">
+          <div className="try-left">
+            <div className="try-eyebrow">TRY ALPIE-CORE</div>
+            <h3 className="try-title">Run the model before you draw on it.</h3>
+            <p className="try-sub">Pick where you like to work — the weights and demos are already up.</p>
+          </div>
+          <div className="try-buttons">
+            <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer" className="try-btn try-btn-hf">
+              <span className="try-btn-icon" aria-hidden="true">🤗</span>
+              <span className="try-btn-body">
+                <span className="try-btn-name">Hugging Face</span>
+                <span className="try-btn-sub">169Pi/Alpie-Core</span>
+              </span>
+            </a>
+            <a href="https://ollama.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-ollama">
+              <span className="try-btn-icon" aria-hidden="true">🦙</span>
+              <span className="try-btn-body">
+                <span className="try-btn-name">Ollama</span>
+                <span className="try-btn-sub">ollama run 169pi</span>
+              </span>
+            </a>
+            <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-kaggle">
+              <span className="try-btn-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.83 21.06a.34.34 0 0 1-.34.34h-3.14a.5.5 0 0 1-.4-.2l-4.4-5.63-1.28 1.22v4.27a.34.34 0 0 1-.34.34H6.4a.34.34 0 0 1-.34-.34V2.94A.34.34 0 0 1 6.4 2.6h2.53c.19 0 .34.15.34.34v10.6l5-5.02a.5.5 0 0 1 .35-.15h3.24c.31 0 .43.35.22.55L13 13.68l5.75 7.11a.35.35 0 0 1 .08.27z"/>
+                </svg>
+              </span>
+              <span className="try-btn-body">
+                <span className="try-btn-name">Kaggle</span>
+                <span className="try-btn-sub">notebooks & data</span>
+              </span>
+            </a>
+          </div>
+          <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer" className="try-docs">
+            Read the docs ↗
+          </a>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="content">
         {/* Steps */}
@@ -390,7 +417,7 @@ Please write my Wall of Fame block now.`;
               <h2>Your first contribution, step by step</h2>
               <p>
                 Hit <strong>Help</strong> on any step for a short how-to. Check it off once you&apos;ve done it on GitHub
-                {user ? ' (or sign in — we auto-check star, fork and PR).' : ' — or sign in with GitHub and we auto-check star, fork and PR.'}
+                {user ? ' (star is auto-checked when you sign in).' : ' — sign in with GitHub and the star step gets auto-checked.'}
               </p>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
