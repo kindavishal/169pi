@@ -21,7 +21,13 @@ const STEPS = [
     cmd: 'profile/README.md  →  ## 🎨 Make this README yours', drafter: true },
   { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
     guide: 'A pull request asks 169pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
-    cmd: '@your-github-handle: <what you’re calling it>' },
+    cmd: '@your-github-handle: <what you’re calling it>',
+    rules: [
+      'One open PR per person at a time — put your best foot forward.',
+      'Your entry must be original (your own work, or clearly attributed).',
+      'It has to reflect something real about 169pi — a model, capability, or benchmark.',
+      'Entries stay in the repo permanently; older ones may rotate out of the visible section but nothing gets deleted.',
+    ] },
   { id: 'review', tag: '06', title: 'Wait for the review', desc: 'bi-weekly merges', help: true, ctaText: 'Discuss in Discord ↗', ctaHref: DISCORD_URL,
     guide: 'The team merges every two weeks — next merge is October 6, 2026. If they suggest a tweak, just commit again to the same branch and your PR updates itself.' },
   { id: 'merged', tag: '07', title: 'Merged → you did it', desc: 'first contribution done', help: true,
@@ -438,6 +444,14 @@ Please write my Wall of Fame block now.`;
                     <div className="step-guide">
                       <div>{s.guide}</div>
                       {s.cmd && <div className="cmd">{s.cmd}</div>}
+                      {s.rules && (
+                        <div className="rules">
+                          <div className="rules-label">Before you PR</div>
+                          <ul>
+                            {s.rules.map((r) => <li key={r}>{r}</li>)}
+                          </ul>
+                        </div>
+                      )}
                       {s.drafter && (
                         <div style={{ marginTop: 10 }}>
                           <button className="btn-solid" onClick={() => setDrafterOpen(true)} style={{ padding: '8px 14px' }}>
@@ -599,7 +613,9 @@ Please write my Wall of Fame block now.`;
               ))}
             </div>
             <div className="alpie-foot">
-              Answers come from Alpie-Core, right here — or go deeper at{' '}
+              Answers come from Alpie-Core, right here — deeper docs at{' '}
+              <a href="https://169pi-kappa.vercel.app" target="_blank" rel="noreferrer">169pi-kappa.vercel.app</a>{' '}
+              or try the model at{' '}
               <a href="https://alpie.ai" target="_blank" rel="noreferrer">alpie.ai</a>.
             </div>
           </div>
