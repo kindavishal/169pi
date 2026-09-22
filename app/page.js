@@ -71,6 +71,7 @@ export default function Home() {
   const [contributorsCount, setContributorsCount] = useState(null);
   const [prsCount, setPrsCount] = useState(null);
   const [contributors, setContributors] = useState(null);
+  const [statsRepo, setStatsRepo] = useState({ owner: '169Pi', repo: '.github' });
 
   const [user, setUser] = useState(null);
   const [ghStatus, setGhStatus] = useState(null);
@@ -117,6 +118,7 @@ export default function Home() {
         if (j.prsCount !== null && j.prsCount !== undefined) setPrsCount(j.prsCount);
         if (j.contributorsCount !== null && j.contributorsCount !== undefined) setContributorsCount(j.contributorsCount);
         setContributors(Array.isArray(j.contributors) ? j.contributors : []);
+        if (j.owner && j.repo) setStatsRepo({ owner: j.owner, repo: j.repo });
       } catch {
         if (!cancelled) setContributors([]);
       }
@@ -325,7 +327,7 @@ Please write my Wall of Fame block now.`;
         <div className="stats">
           <div className="stats-header">
             <span className="live-dot" />
-            <span className="small-label">LIVE FROM THE {REPO.toUpperCase()} REPO</span>
+            <span className="small-label">LIVE FROM {statsRepo.owner.toUpperCase()}/{statsRepo.repo.toUpperCase()}</span>
           </div>
           <div className="stars-panel">
             <div className="stars-row">
@@ -334,7 +336,7 @@ Please write my Wall of Fame block now.`;
               </svg>
               <span className="stars-num">{stars ?? '—'}</span>
             </div>
-            <div className="stars-cap">stars on {REPO}</div>
+            <div className="stars-cap">stars on {statsRepo.owner}/{statsRepo.repo}</div>
           </div>
           <div className="stats-mini">
             <div className="mini">
@@ -452,11 +454,11 @@ Please write my Wall of Fame block now.`;
               <div>
                 <div className="leaderboard-title">Contributor leaderboard</div>
                 <div className="leaderboard-sub">
-                  {contributorsCount ?? '—'} contributors to {REPO}
+                  {contributorsCount ?? '—'} contributors to {statsRepo.owner}/{statsRepo.repo}
                 </div>
               </div>
               <a
-                href={`https://github.com/${OWNER}/${REPO}/graphs/contributors`}
+                href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/graphs/contributors`}
                 target="_blank"
                 rel="noreferrer"
                 className="leaderboard-all"

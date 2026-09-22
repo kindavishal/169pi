@@ -44,8 +44,8 @@ export async function GET(req) {
     return NextResponse.json({ ...cache.data, cached: true });
   }
 
-  const owner = process.env.GITHUB_OWNER || '169Pi';
-  const repo = process.env.GITHUB_REPO || 'Alpie-Core';
+  const owner = process.env.GITHUB_STATS_OWNER || '169Pi';
+  const repo = process.env.GITHUB_STATS_REPO || '.github';
 
   const [repoRes, prsRes, contribRes] = await Promise.all([
     gh(`/repos/${owner}/${repo}`, token),
