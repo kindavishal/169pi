@@ -44,10 +44,13 @@ export async function GET(req) {
     return NextResponse.json({ ...cache.data, cached: true });
   }
 
-  const owner = process.env.GITHUB_OWNER || '169Pi';
-  const repo = process.env.GITHUB_REPO || 'Alpie-Core';
+  const owner = process.env.GITHUB_STATS_OWNER || '169Pi';
+  const repo = process.env.GITHUB_STATS_REPO || '.github';
+  const starsOwner = process.env.GITHUB_STARS_OWNER || '169Pi';
+  const starsRepo = process.env.GITHUB_STARS_REPO || 'Alpie-Core';
 
-  const [repoRes, prsRes, contribRes] = await Promise.all([
+  const [starsRes, repoRes, prsRes, contribRes] = await Promise.all([
+    gh(`/repos/${starsOwner}/${starsRepo}`, token),
     gh(`/repos/${owner}/${repo}`, token),
     gh(`/repos/${owner}/${repo}/pulls?state=all&per_page=8&sort=created&direction=desc`, token),
     gh(`/repos/${owner}/${repo}/contributors?per_page=100&anon=1`, token),
@@ -55,10 +58,16 @@ export async function GET(req) {
 
   const errors = [];
   let stars = null;
+  if (starsRes.ok) {
+    const j = await starsRes.json();
+    stars = j.stargazers_count ?? 0;
+  } else {
+    errors.push({ endpoint: 'stars-repo', status: starsRes.status });
+  }
+
   let forks = null;
   if (repoRes.ok) {
     const j = await repoRes.json();
-    stars = j.stargazers_count ?? 0;
     forks = j.forks_count ?? 0;
   } else {
     errors.push({ endpoint: 'repo', status: repoRes.status });
@@ -80,16 +89,31 @@ export async function GET(req) {
   }
 
   let contributorsCount = null;
+  let contributors = [];
   if (contribRes.ok) {
     const j = await contribRes.json();
-    contributorsCount = Array.isArray(j) ? j.length : 0;
+    if (Array.isArray(j)) {
+      contributorsCount = j.length;
+      contributors = j
+        .filter((c) => c && c.login)
+        .map((c) => ({
+          login: c.login,
+          avatar: c.avatar_url || null,
+          contributions: c.contributions || 0,
+          href: c.html_url || `https://github.com/${c.login}`,
+        }))
+        .sort((a, b) => b.contributions - a.contributions);
+    } else {
+      contributorsCount = 0;
+    }
   } else {
     errors.push({ endpoint: 'contributors', status: contribRes.status });
   }
 
   const data = {
     owner, repo,
-    stars, forks, prsCount, contributorsCount, recentPRs,
+    starsOwner, starsRepo,
+    stars, forks, prsCount, contributorsCount, contributors, recentPRs,
     fetchedAt: new Date().toISOString(),
     errors: errors.length ? errors : undefined,
   };
