@@ -319,7 +319,7 @@ Please write my Wall of Fame block now.`;
             Get ready for Hacktoberfest<br />with <span className="accent">169Pi.</span>
           </h1>
           <p>
-            Make your first open-source contribution before October — the easy way. <strong>Alpie-Core</strong> is 169Pi&apos;s open-source AI reasoning model (the first 4-bit one built in India). Show what it can do — a proof, a haiku, some ASCII, a bit of code — add it to the model&apos;s GitHub README, and open your first pull request. We&apos;ll walk you through each step.
+            Make your first open-source contribution before October — the easy way. <strong>Alpie-Core</strong> is 169pi&apos;s open-source AI reasoning model (32B params, 4-bit, built in India). Plant a flag on the <strong>169pi org profile</strong> — custom SVG art, an explanatory diagram, a benchmark visualization, a runnable micro-demo — anything that showcases <em>you</em> reflecting something real about the model. Open a PR against <code>169Pi/.github</code> and we&apos;ll walk you through each step.
           </p>
           <div className="chips">
             <span className="chip">No experience needed</span>
