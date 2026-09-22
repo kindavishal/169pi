@@ -300,6 +300,14 @@ h1.hero-h .accent { color: #1B7A6E; }
   color: #E8A317; letter-spacing: 1px; margin-top: 12px; text-align: center;
 }
 .countdown-start { font-size: 11px; color: #7f9d95; margin-top: 8px; text-align: center; }
+.countdown-merge {
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid #1c3a42;
+  font-size: 12px; color: #c9d6d3; text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.countdown-merge strong { color: #E8A317; font-weight: 700; }
+.countdown-merge-dot { width: 6px; height: 6px; border-radius: 50%; background: #E8A317; }
 
 .alpie-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .alpie-avatar {

@@ -8,6 +8,7 @@ const PROFILE_OWNER = process.env.NEXT_PUBLIC_GITHUB_PROFILE_OWNER || '169Pi';
 const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
+const NEXT_MERGE_DATE = 'October 6, 2026';
 const STORAGE_KEY = 'preptember.progress.v2';
 
 const STEPS = [
@@ -21,8 +22,8 @@ const STEPS = [
   { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
     guide: 'A pull request asks 169pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
     cmd: '@your-github-handle: <what you’re calling it>' },
-  { id: 'review', tag: '06', title: 'Wait for the review', desc: 'reviewed weekly', help: true, ctaText: 'Discuss in Discord ↗', ctaHref: DISCORD_URL,
-    guide: 'The team reviews weekly. If they suggest a tweak, just commit again to the same branch and your PR updates itself.' },
+  { id: 'review', tag: '06', title: 'Wait for the review', desc: 'bi-weekly merges', help: true, ctaText: 'Discuss in Discord ↗', ctaHref: DISCORD_URL,
+    guide: 'The team merges every two weeks — next merge is October 6, 2026. If they suggest a tweak, just commit again to the same branch and your PR updates itself.' },
   { id: 'merged', tag: '07', title: 'Merged → you did it', desc: 'first contribution done', help: true,
     guide: 'When it is merged, your entry is live on the 169pi org profile and 169pi ships you swag. You just made your first open-source contribution.' },
 ];
@@ -451,6 +452,10 @@ Please write my Wall of Fame block now.`;
             </div>
             <div className="countdown-clock">{cd.clock}</div>
             <div className="countdown-start">starts October 1, 2026</div>
+            <div className="countdown-merge">
+              <span className="countdown-merge-dot" />
+              Next merge: <strong>{NEXT_MERGE_DATE}</strong>
+            </div>
           </div>
 
           <div className="leaderboard-card">
