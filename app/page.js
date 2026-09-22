@@ -324,7 +324,18 @@ Please write my Wall of Fame block now.`;
           <div className="chips">
             <span className="chip">No experience needed</span>
             <span className="chip">~20 minutes</span>
-            <span className="chip">Real 169Pi swag when merged</span>
+            <span className="chip">Real 169pi swag when merged</span>
+          </div>
+
+          <div className="benchmarks" aria-label="Alpie-Core benchmarks">
+            <div className="benchmarks-label">Alpie-Core, in numbers</div>
+            <div className="benchmarks-grid">
+              <div className="bench"><span className="bench-num">92.75%</span><span className="bench-cap">GSM8K</span></div>
+              <div className="bench"><span className="bench-num">81.28%</span><span className="bench-cap">MMLU</span></div>
+              <div className="bench"><span className="bench-num">57.8%</span><span className="bench-cap">SWE-Bench Verified</span></div>
+              <div className="bench"><span className="bench-num">65K</span><span className="bench-cap">context</span></div>
+              <div className="bench"><span className="bench-num">~16 GB</span><span className="bench-cap">VRAM</span></div>
+            </div>
           </div>
         </div>
 
