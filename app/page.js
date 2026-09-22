@@ -6,7 +6,7 @@ const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
-const STORAGE_KEY = 'preptember.progress.v1';
+const STORAGE_KEY = 'preptember.progress.v2';
 
 const STEPS = [
   { id: 'star', tag: '01', title: `Star ${REPO}`, desc: 'takes 2 seconds', ctaText: 'Star it ↗', ctaHref: `https://github.com/${OWNER}/${REPO}` },
@@ -63,13 +63,14 @@ function relTime(iso) {
 
 export default function Home() {
   const [done, setDone] = useState({});
-  const [openId, setOpenId] = useState('fork');
+  const [openId, setOpenId] = useState(null);
   const [hydrated, setHydrated] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const [stars, setStars] = useState(null);
   const [contributorsCount, setContributorsCount] = useState(null);
   const [prsCount, setPrsCount] = useState(null);
-  const [recentPRs, setRecentPRs] = useState(null);
+  const [contributors, setContributors] = useState(null);
 
   const [user, setUser] = useState(null);
   const [ghStatus, setGhStatus] = useState(null);
@@ -109,15 +110,15 @@ export default function Home() {
     async function loadStats() {
       try {
         const r = await fetch('/api/github/stats', { cache: 'no-store' });
-        if (!r.ok) { if (!cancelled) setRecentPRs([]); return; }
+        if (!r.ok) { if (!cancelled) setContributors([]); return; }
         const j = await r.json();
         if (cancelled) return;
         if (j.stars !== null && j.stars !== undefined) setStars(j.stars);
         if (j.prsCount !== null && j.prsCount !== undefined) setPrsCount(j.prsCount);
         if (j.contributorsCount !== null && j.contributorsCount !== undefined) setContributorsCount(j.contributorsCount);
-        setRecentPRs(Array.isArray(j.recentPRs) ? j.recentPRs : []);
+        setContributors(Array.isArray(j.contributors) ? j.contributors : []);
       } catch {
-        if (!cancelled) setRecentPRs([]);
+        if (!cancelled) setContributors([]);
       }
     }
     loadStats();
@@ -255,16 +256,6 @@ Please write my Wall of Fame block now.`;
           <div className="nav-sub">Preptember · road to Hacktoberfest</div>
         </div>
         <div style={{ flexGrow: 1 }} />
-        <div className="nav-people">
-          <span style={{ display: 'flex' }}>
-            <span className="dot" style={{ background: '#E8A317' }} />
-            <span className="dot" style={{ background: '#1B7A6E' }} />
-            <span className="dot" style={{ background: '#C64B8C' }} />
-          </span>
-          <span style={{ fontSize: 12, color: '#c9d6d3' }}>
-            <strong style={{ color: '#8fc7bd' }}>{contributorsCount ?? '—'}</strong> contributors so far
-          </span>
-        </div>
         {user ? (
           <span className="auth-pill">
             {user.avatar ? <img src={user.avatar} alt={user.login} /> : null}
@@ -272,18 +263,35 @@ Please write my Wall of Fame block now.`;
             <button className="logout" onClick={logout}>sign out</button>
           </span>
         ) : (
-          <a
-            href="/api/auth/github"
-            className="auth-pill"
-            style={{ background: '#1B7A6E', borderColor: '#1B7A6E', color: '#FBFAF7' }}
-          >
-            Sign in with GitHub
+          <a href="/api/auth/github" className="auth-pill auth-pill-signin">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
+            </svg>
+            <span>Sign in with GitHub</span>
           </a>
         )}
-        <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer">
-          {REPO} repo
+        <a
+          href={`https://github.com/${OWNER}/${REPO}`}
+          target="_blank"
+          rel="noreferrer"
+          className="nav-btn nav-btn-github"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
+          </svg>
+          <span>{REPO} repo</span>
         </a>
-        <a href={DISCORD_URL} target="_blank" rel="noreferrer">Discord</a>
+        <a
+          href={DISCORD_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="nav-btn nav-btn-discord"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.32 4.57A19.79 19.79 0 0 0 16.56 3.4a.07.07 0 0 0-.07.03c-.16.29-.34.66-.47.96a18.28 18.28 0 0 0-5.48 0c-.13-.31-.32-.68-.48-.96a.08.08 0 0 0-.08-.03c-1.3.22-2.55.6-3.75 1.17a.07.07 0 0 0-.03.03C1.99 9.06 1.1 13.4 1.54 17.7a.08.08 0 0 0 .03.06c1.55 1.14 3.05 1.83 4.53 2.29a.08.08 0 0 0 .09-.03c.35-.48.66-.98.93-1.51a.08.08 0 0 0-.04-.11 12.6 12.6 0 0 1-1.8-.86.08.08 0 0 1-.01-.13c.12-.09.24-.19.36-.28a.08.08 0 0 1 .08-.01c3.78 1.73 7.86 1.73 11.6 0a.08.08 0 0 1 .08.01c.12.1.24.19.36.29a.08.08 0 0 1-.01.13c-.57.34-1.17.62-1.8.86a.08.08 0 0 0-.04.11c.28.53.59 1.03.93 1.51a.08.08 0 0 0 .09.03c1.49-.46 2.99-1.15 4.54-2.29a.08.08 0 0 0 .03-.06c.52-5.02-.87-9.32-3.68-13.16a.06.06 0 0 0-.03-.03zM8.52 15.09c-.9 0-1.63-.83-1.63-1.84s.72-1.84 1.63-1.84c.92 0 1.65.83 1.63 1.84 0 1.01-.72 1.84-1.63 1.84zm6.03 0c-.9 0-1.63-.83-1.63-1.84s.72-1.84 1.63-1.84c.92 0 1.65.83 1.63 1.84 0 1.01-.71 1.84-1.63 1.84z" />
+          </svg>
+          <span>Discord</span>
+        </a>
       </div>
 
       {/* Context bar */}
@@ -346,44 +354,6 @@ Please write my Wall of Fame block now.`;
             <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer" className="btn btn-teal">★ Star the repo</a>
             <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn btn-dark">Join Discord</a>
           </div>
-        </div>
-      </div>
-
-      {/* PR feed */}
-      <div className="feed-wrap">
-        <div className="feed">
-          <div className="feed-head">
-            <span className="live-dot" />
-            <span className="small-label">RECENT PULL REQUESTS</span>
-          </div>
-          <div className="feed-list">
-            {recentPRs === null && (
-              <span style={{ fontSize: 13, color: '#8a8578' }}>Loading recent PRs…</span>
-            )}
-            {recentPRs && recentPRs.length === 0 && (
-              <span style={{ fontSize: 13, color: '#8a8578' }}>
-                No PRs yet — <strong>be the first</strong>.
-              </span>
-            )}
-            {(recentPRs || []).map((pr) => (
-              <a key={pr.href} href={pr.href} target="_blank" rel="noreferrer" className="pr-pill">
-                {pr.avatar ? (
-                  <img src={pr.avatar} alt="" className="pr-avatar" style={{ background: '#eee' }} />
-                ) : (
-                  <span className="pr-avatar" style={{ background: initialsColor(pr.user) }}>
-                    {pr.user.slice(0, 1).toUpperCase()}
-                  </span>
-                )}
-                <span style={{ lineHeight: 1.2 }}>
-                  <span className="pr-user">@{pr.user}</span>
-                  <span className="pr-when">opened a PR · {pr.when}</span>
-                </span>
-              </a>
-            ))}
-          </div>
-          <a href={`https://github.com/${OWNER}/${REPO}/pulls`} target="_blank" rel="noreferrer" className="see-all">
-            See all →
-          </a>
         </div>
       </div>
 
@@ -477,15 +447,91 @@ Please write my Wall of Fame block now.`;
             <div className="countdown-start">starts October 1, 2026</div>
           </div>
 
-          <div className="dark-card">
+          <div className="leaderboard-card">
+            <div className="leaderboard-head">
+              <div>
+                <div className="leaderboard-title">Contributor leaderboard</div>
+                <div className="leaderboard-sub">
+                  {contributorsCount ?? '—'} contributors to {REPO}
+                </div>
+              </div>
+              <a
+                href={`https://github.com/${OWNER}/${REPO}/graphs/contributors`}
+                target="_blank"
+                rel="noreferrer"
+                className="leaderboard-all"
+              >
+                See all →
+              </a>
+            </div>
+            <ol className="leaderboard-list">
+              {contributors === null && (
+                <li className="leaderboard-empty">Loading contributors…</li>
+              )}
+              {contributors && contributors.length === 0 && (
+                <li className="leaderboard-empty">
+                  No contributors yet — <strong>be the first</strong>.
+                </li>
+              )}
+              {(contributors || []).slice(0, 10).map((c, i) => {
+                const rank = i + 1;
+                const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+                return (
+                  <li key={c.login} className="leaderboard-row">
+                    <span className={`leaderboard-rank ${rankClass}`}>{rank}</span>
+                    <a
+                      href={c.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="leaderboard-user"
+                    >
+                      {c.avatar ? (
+                        <img src={c.avatar} alt="" className="leaderboard-avatar" />
+                      ) : (
+                        <span
+                          className="leaderboard-avatar"
+                          style={{ background: initialsColor(c.login), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700 }}
+                        >
+                          {c.login.slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
+                      <span className="leaderboard-login">@{c.login}</span>
+                    </a>
+                    <span className="leaderboard-count">
+                      {c.contributions}
+                      <span className="leaderboard-count-label"> {c.contributions === 1 ? 'commit' : 'commits'}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Floating Alpie chat */}
+      <div className={`alpie-float ${chatOpen ? 'open' : ''}`}>
+        {chatOpen && (
+          <div className="alpie-panel dark-card">
             <div className="alpie-head">
               <div className="alpie-avatar">
                 <img src="/alpie-logo.webp" alt="Alpie" style={{ width: 22, height: 22, objectFit: 'contain' }} />
               </div>
-              <div>
+              <div style={{ flexGrow: 1 }}>
                 <div className="alpie-title">Ask Alpie</div>
                 <div className="alpie-sub">stuck? the model itself can help</div>
               </div>
+              <button
+                type="button"
+                aria-label="Close Alpie chat"
+                className="alpie-close"
+                onClick={() => setChatOpen(false)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
             </div>
 
             {chat.length > 0 && (
@@ -535,7 +581,18 @@ Please write my Wall of Fame block now.`;
               <a href="https://alpie.ai" target="_blank" rel="noreferrer">alpie.ai</a>.
             </div>
           </div>
-        </div>
+        )}
+        {!chatOpen && (
+          <button
+            type="button"
+            aria-label="Open Alpie chat"
+            className="alpie-fab"
+            onClick={() => setChatOpen(true)}
+          >
+            <img src="/alpie-logo.webp" alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+            <span>Ask Alpie</span>
+          </button>
+        )}
       </div>
 
       {/* Drafter modal */}
@@ -605,9 +662,13 @@ Please write my Wall of Fame block now.`;
       )}
 
       <div style={{ padding: '24px 56px 40px', fontSize: 12, color: '#8a8578', textAlign: 'center' }}>
-        Built for Preptember 2026 · unofficial companion to Hacktoberfest ·{' '}
-        <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer">
-          github.com/{OWNER}/{REPO}
+        Built by{' '}
+        <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">
+          @kindavishal
+        </a>{' '}
+        for Preptember 2026 · unofficial companion to Hacktoberfest ·{' '}
+        <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">
+          github.com/kindavishal/169pi
         </a>
       </div>
     </main>

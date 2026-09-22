@@ -80,16 +80,30 @@ export async function GET(req) {
   }
 
   let contributorsCount = null;
+  let contributors = [];
   if (contribRes.ok) {
     const j = await contribRes.json();
-    contributorsCount = Array.isArray(j) ? j.length : 0;
+    if (Array.isArray(j)) {
+      contributorsCount = j.length;
+      contributors = j
+        .filter((c) => c && c.login)
+        .map((c) => ({
+          login: c.login,
+          avatar: c.avatar_url || null,
+          contributions: c.contributions || 0,
+          href: c.html_url || `https://github.com/${c.login}`,
+        }))
+        .sort((a, b) => b.contributions - a.contributions);
+    } else {
+      contributorsCount = 0;
+    }
   } else {
     errors.push({ endpoint: 'contributors', status: contribRes.status });
   }
 
   const data = {
     owner, repo,
-    stars, forks, prsCount, contributorsCount, recentPRs,
+    stars, forks, prsCount, contributorsCount, contributors, recentPRs,
     fetchedAt: new Date().toISOString(),
     errors: errors.length ? errors : undefined,
   };
