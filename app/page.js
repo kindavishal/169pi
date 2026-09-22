@@ -86,7 +86,7 @@ export default function Home() {
   const chatRef = useRef(null);
 
   const [drafterOpen, setDrafterOpen] = useState(false);
-  const [drafterForm, setDrafterForm] = useState({ name: '', medium: 'haiku', vibe: '' });
+  const [drafterForm, setDrafterForm] = useState({ name: '', medium: 'svg', vibe: '' });
   const [draft, setDraft] = useState('');
   const [drafterBusy, setDrafterBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -626,12 +626,12 @@ Please write my Wall of Fame block now.`;
                 value={drafterForm.medium}
                 onChange={(e) => setDrafterForm((f) => ({ ...f, medium: e.target.value }))}
               >
-                <option value="haiku">Haiku</option>
-                <option value="limerick">Limerick</option>
-                <option value="ascii">ASCII art</option>
-                <option value="proof">Tiny proof</option>
-                <option value="code">Two-line code snippet</option>
-                <option value="compliment">One-line compliment</option>
+                <option value="svg">Custom SVG art / hero image</option>
+                <option value="diagram">Explanatory diagram (Mermaid / SVG)</option>
+                <option value="benchmark">Benchmark visualization (GSM8K / MMLU / SWE-Bench)</option>
+                <option value="demo">Runnable micro-demo</option>
+                <option value="ascii">Structured ASCII depicting something</option>
+                <option value="writing">Writing with a visual layout</option>
               </select>
             </div>
             <div className="field">
