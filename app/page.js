@@ -72,6 +72,7 @@ export default function Home() {
   const [prsCount, setPrsCount] = useState(null);
   const [contributors, setContributors] = useState(null);
   const [statsRepo, setStatsRepo] = useState({ owner: '169Pi', repo: '.github' });
+  const [starsRepoInfo, setStarsRepoInfo] = useState({ owner: '169Pi', repo: 'Alpie-Core' });
 
   const [user, setUser] = useState(null);
   const [ghStatus, setGhStatus] = useState(null);
@@ -119,6 +120,7 @@ export default function Home() {
         if (j.contributorsCount !== null && j.contributorsCount !== undefined) setContributorsCount(j.contributorsCount);
         setContributors(Array.isArray(j.contributors) ? j.contributors : []);
         if (j.owner && j.repo) setStatsRepo({ owner: j.owner, repo: j.repo });
+        if (j.starsOwner && j.starsRepo) setStarsRepoInfo({ owner: j.starsOwner, repo: j.starsRepo });
       } catch {
         if (!cancelled) setContributors([]);
       }
@@ -336,7 +338,7 @@ Please write my Wall of Fame block now.`;
               </svg>
               <span className="stars-num">{stars ?? '—'}</span>
             </div>
-            <div className="stars-cap">stars on {statsRepo.owner}/{statsRepo.repo}</div>
+            <div className="stars-cap">stars on {starsRepoInfo.owner}/{starsRepoInfo.repo}</div>
           </div>
           <div className="stats-mini">
             <div className="mini">

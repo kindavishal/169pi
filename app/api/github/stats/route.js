@@ -46,8 +46,11 @@ export async function GET(req) {
 
   const owner = process.env.GITHUB_STATS_OWNER || '169Pi';
   const repo = process.env.GITHUB_STATS_REPO || '.github';
+  const starsOwner = process.env.GITHUB_STARS_OWNER || '169Pi';
+  const starsRepo = process.env.GITHUB_STARS_REPO || 'Alpie-Core';
 
-  const [repoRes, prsRes, contribRes] = await Promise.all([
+  const [starsRes, repoRes, prsRes, contribRes] = await Promise.all([
+    gh(`/repos/${starsOwner}/${starsRepo}`, token),
     gh(`/repos/${owner}/${repo}`, token),
     gh(`/repos/${owner}/${repo}/pulls?state=all&per_page=8&sort=created&direction=desc`, token),
     gh(`/repos/${owner}/${repo}/contributors?per_page=100&anon=1`, token),
@@ -55,10 +58,16 @@ export async function GET(req) {
 
   const errors = [];
   let stars = null;
+  if (starsRes.ok) {
+    const j = await starsRes.json();
+    stars = j.stargazers_count ?? 0;
+  } else {
+    errors.push({ endpoint: 'stars-repo', status: starsRes.status });
+  }
+
   let forks = null;
   if (repoRes.ok) {
     const j = await repoRes.json();
-    stars = j.stargazers_count ?? 0;
     forks = j.forks_count ?? 0;
   } else {
     errors.push({ endpoint: 'repo', status: repoRes.status });
@@ -103,6 +112,7 @@ export async function GET(req) {
 
   const data = {
     owner, repo,
+    starsOwner, starsRepo,
     stars, forks, prsCount, contributorsCount, contributors, recentPRs,
     fetchedAt: new Date().toISOString(),
     errors: errors.length ? errors : undefined,
