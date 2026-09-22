@@ -9,7 +9,7 @@ const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
 const NEXT_MERGE_DATE = 'October 6, 2026';
-const STORAGE_KEY = 'preptember.progress.v2';
+const STORAGE_KEY = 'preptember.progress.v3';
 
 const STEPS = [
   { id: 'star', tag: '01', title: `Star ${REPO}`, desc: 'takes 2 seconds', ctaText: 'Star it ↗', ctaHref: `https://github.com/${OWNER}/${REPO}` },
@@ -164,9 +164,6 @@ export default function Home() {
         setDone((prev) => {
           const next = { ...prev };
           if (j.starred) next.star = true;
-          if (j.forked) next.fork = true;
-          if (j.openPr || j.mergedPr) next.pr = true;
-          if (j.mergedPr) next.merged = true;
           return next;
         });
       }
