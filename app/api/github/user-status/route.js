@@ -29,15 +29,17 @@ export async function GET(req) {
   const session = readSession(req);
   if (!session) return NextResponse.json({ authenticated: false });
 
-  const owner = process.env.GITHUB_OWNER || '169Pi';
-  const repo = process.env.GITHUB_REPO || 'Alpie-Core';
+  const starOwner = process.env.GITHUB_STARS_OWNER || '169Pi';
+  const starRepo = process.env.GITHUB_STARS_REPO || 'Alpie-Core';
+  const prOwner = process.env.GITHUB_PROFILE_OWNER || '169Pi';
+  const prRepo = process.env.GITHUB_PROFILE_REPO || '.github';
   const login = session.login;
   const token = session.t;
 
   const [starRes, forksRes, prsRes] = await Promise.all([
-    gh(`/user/starred/${owner}/${repo}`, token),
-    gh(`/repos/${owner}/${repo}/forks?per_page=100&sort=newest`, token),
-    gh(`/repos/${owner}/${repo}/pulls?state=all&per_page=100&sort=created&direction=desc`, token),
+    gh(`/user/starred/${starOwner}/${starRepo}`, token),
+    gh(`/repos/${prOwner}/${prRepo}/forks?per_page=100&sort=newest`, token),
+    gh(`/repos/${prOwner}/${prRepo}/pulls?state=all&per_page=100&sort=created&direction=desc`, token),
   ]);
 
   const starred = starRes.status === 204;

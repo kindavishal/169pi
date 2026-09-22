@@ -4,25 +4,34 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
+const PROFILE_OWNER = process.env.NEXT_PUBLIC_GITHUB_PROFILE_OWNER || '169Pi';
+const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
+const NEXT_MERGE_DATE = 'October 6, 2026';
 const STORAGE_KEY = 'preptember.progress.v2';
 
 const STEPS = [
   { id: 'star', tag: '01', title: `Star ${REPO}`, desc: 'takes 2 seconds', ctaText: 'Star it ↗', ctaHref: `https://github.com/${OWNER}/${REPO}` },
   { id: 'discord', tag: '02', title: 'Join the Discord', desc: 'where you get help', ctaText: 'Join ↗', ctaHref: DISCORD_URL },
-  { id: 'fork', tag: '03', title: 'Fork the repo', desc: 'make your own copy', help: true, ctaText: 'Open repo ↗', ctaHref: `https://github.com/${OWNER}/${REPO}`,
-    guide: 'A fork is your personal copy of the repo. Click Fork (top-right) then Create fork. You will make your change in your copy, then offer it back.' },
-  { id: 'add', tag: '04', title: 'Add your work to the README', desc: 'your creative bit', help: true,
-    guide: 'In your fork, open README.md, scroll to the Wall of Fame section, and add your representation of the model there. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
-    cmd: 'README.md  →  ## 🏆 Wall of Fame', drafter: true },
-  { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${OWNER}/${REPO}/compare`,
-    guide: 'A pull request asks 169Pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
-    cmd: '[169pi] Your Name — Your Medium' },
-  { id: 'review', tag: '06', title: 'Wait for the review', desc: 'reviewed weekly', help: true, ctaText: 'Discuss in Discord ↗', ctaHref: DISCORD_URL,
-    guide: 'The team reviews weekly. If they suggest a tweak, just commit again to the same branch and your PR updates itself.' },
+  { id: 'fork', tag: '03', title: `Fork ${PROFILE_OWNER}/${PROFILE_REPO}`, desc: 'make your own copy', help: true, ctaText: 'Open repo ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}`,
+    guide: `A fork is your personal copy of the repo. You are forking ${PROFILE_OWNER}/${PROFILE_REPO} — the 169pi org profile — because that is where your entry gets published. Click Fork (top-right) then Create fork. You will make your change in your copy, then offer it back.` },
+  { id: 'add', tag: '04', title: 'Add your entry to the profile README', desc: 'your creative bit', help: true,
+    guide: 'In your fork, open profile/README.md, scroll to the "Make this README yours" section, and add your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
+    cmd: 'profile/README.md  →  ## 🎨 Make this README yours', drafter: true },
+  { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
+    guide: 'A pull request asks 169pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
+    cmd: '@your-github-handle: <what you’re calling it>',
+    rules: [
+      'One open PR per person at a time — put your best foot forward.',
+      'Your entry must be original (your own work, or clearly attributed).',
+      'It has to reflect something real about 169pi — a model, capability, or benchmark.',
+      'Entries stay in the repo permanently; older ones may rotate out of the visible section but nothing gets deleted.',
+    ] },
+  { id: 'review', tag: '06', title: 'Wait for the review', desc: 'bi-weekly merges', help: true, ctaText: 'Discuss in Discord ↗', ctaHref: DISCORD_URL,
+    guide: 'The team merges every two weeks — next merge is October 6, 2026. If they suggest a tweak, just commit again to the same branch and your PR updates itself.' },
   { id: 'merged', tag: '07', title: 'Merged → you did it', desc: 'first contribution done', help: true,
-    guide: 'When it is merged, your work is on the Wall of Fame and 169Pi ships you swag. You just made your first open-source contribution.' },
+    guide: 'When it is merged, your entry is live on the 169pi org profile and 169pi ships you swag. You just made your first open-source contribution.' },
 ];
 
 function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -83,7 +92,7 @@ export default function Home() {
   const chatRef = useRef(null);
 
   const [drafterOpen, setDrafterOpen] = useState(false);
-  const [drafterForm, setDrafterForm] = useState({ name: '', medium: 'haiku', vibe: '' });
+  const [drafterForm, setDrafterForm] = useState({ name: '', medium: 'svg', vibe: '' });
   const [draft, setDraft] = useState('');
   const [drafterBusy, setDrafterBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -316,12 +325,23 @@ Please write my Wall of Fame block now.`;
             Get ready for Hacktoberfest<br />with <span className="accent">169Pi.</span>
           </h1>
           <p>
-            Make your first open-source contribution before October — the easy way. <strong>Alpie-Core</strong> is 169Pi&apos;s open-source AI reasoning model (the first 4-bit one built in India). Show what it can do — a proof, a haiku, some ASCII, a bit of code — add it to the model&apos;s GitHub README, and open your first pull request. We&apos;ll walk you through each step.
+            Make your first open-source contribution before October — the easy way. <strong>Alpie-Core</strong> is 169pi&apos;s open-source AI reasoning model (32B params, 4-bit, built in India). Plant a flag on the <strong>169pi org profile</strong> — custom SVG art, an explanatory diagram, a benchmark visualization, a runnable micro-demo — anything that showcases <em>you</em> reflecting something real about the model. Open a PR against <code>169Pi/.github</code> and we&apos;ll walk you through each step.
           </p>
           <div className="chips">
             <span className="chip">No experience needed</span>
             <span className="chip">~20 minutes</span>
-            <span className="chip">Real 169Pi swag when merged</span>
+            <span className="chip">Real 169pi swag when merged</span>
+          </div>
+
+          <div className="benchmarks" aria-label="Alpie-Core benchmarks">
+            <div className="benchmarks-label">Alpie-Core, in numbers</div>
+            <div className="benchmarks-grid">
+              <div className="bench"><span className="bench-num">92.75%</span><span className="bench-cap">GSM8K</span></div>
+              <div className="bench"><span className="bench-num">81.28%</span><span className="bench-cap">MMLU</span></div>
+              <div className="bench"><span className="bench-num">57.8%</span><span className="bench-cap">SWE-Bench Verified</span></div>
+              <div className="bench"><span className="bench-num">65K</span><span className="bench-cap">context</span></div>
+              <div className="bench"><span className="bench-num">~16 GB</span><span className="bench-cap">VRAM</span></div>
+            </div>
           </div>
         </div>
 
@@ -424,6 +444,14 @@ Please write my Wall of Fame block now.`;
                     <div className="step-guide">
                       <div>{s.guide}</div>
                       {s.cmd && <div className="cmd">{s.cmd}</div>}
+                      {s.rules && (
+                        <div className="rules">
+                          <div className="rules-label">Before you PR</div>
+                          <ul>
+                            {s.rules.map((r) => <li key={r}>{r}</li>)}
+                          </ul>
+                        </div>
+                      )}
                       {s.drafter && (
                         <div style={{ marginTop: 10 }}>
                           <button className="btn-solid" onClick={() => setDrafterOpen(true)} style={{ padding: '8px 14px' }}>
@@ -449,6 +477,10 @@ Please write my Wall of Fame block now.`;
             </div>
             <div className="countdown-clock">{cd.clock}</div>
             <div className="countdown-start">starts October 1, 2026</div>
+            <div className="countdown-merge">
+              <span className="countdown-merge-dot" />
+              Next merge: <strong>{NEXT_MERGE_DATE}</strong>
+            </div>
           </div>
 
           <div className="leaderboard-card">
@@ -581,7 +613,9 @@ Please write my Wall of Fame block now.`;
               ))}
             </div>
             <div className="alpie-foot">
-              Answers come from Alpie-Core, right here — or go deeper at{' '}
+              Answers come from Alpie-Core, right here — deeper docs at{' '}
+              <a href="https://169pi-kappa.vercel.app" target="_blank" rel="noreferrer">169pi-kappa.vercel.app</a>{' '}
+              or try the model at{' '}
               <a href="https://alpie.ai" target="_blank" rel="noreferrer">alpie.ai</a>.
             </div>
           </div>
@@ -604,7 +638,7 @@ Please write my Wall of Fame block now.`;
         <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setDrafterOpen(false); }}>
           <div className="modal">
             <h3>Draft your Wall of Fame entry</h3>
-            <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into README.md under the Wall of Fame heading, commit.</p>
+            <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into profile/README.md under the &ldquo;Make this README yours&rdquo; heading, commit.</p>
             <div className="field">
               <label>Your name or GitHub handle</label>
               <input
@@ -619,12 +653,12 @@ Please write my Wall of Fame block now.`;
                 value={drafterForm.medium}
                 onChange={(e) => setDrafterForm((f) => ({ ...f, medium: e.target.value }))}
               >
-                <option value="haiku">Haiku</option>
-                <option value="limerick">Limerick</option>
-                <option value="ascii">ASCII art</option>
-                <option value="proof">Tiny proof</option>
-                <option value="code">Two-line code snippet</option>
-                <option value="compliment">One-line compliment</option>
+                <option value="svg">Custom SVG art / hero image</option>
+                <option value="diagram">Explanatory diagram (Mermaid / SVG)</option>
+                <option value="benchmark">Benchmark visualization (GSM8K / MMLU / SWE-Bench)</option>
+                <option value="demo">Runnable micro-demo</option>
+                <option value="ascii">Structured ASCII depicting something</option>
+                <option value="writing">Writing with a visual layout</option>
               </select>
             </div>
             <div className="field">
