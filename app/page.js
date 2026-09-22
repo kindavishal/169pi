@@ -417,7 +417,7 @@ Please write my Wall of Fame block now.`;
               <h2>Your first contribution, step by step</h2>
               <p>
                 Hit <strong>Help</strong> on any step for a short how-to. Check it off once you&apos;ve done it on GitHub
-                {user ? ' (or sign in — we auto-check star, fork and PR).' : ' — or sign in with GitHub and we auto-check star, fork and PR.'}
+                {user ? ' (star is auto-checked when you sign in).' : ' — sign in with GitHub and the star step gets auto-checked.'}
               </p>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
