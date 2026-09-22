@@ -88,14 +88,45 @@ export async function GET(req) {
     errors.push({ endpoint: 'pulls', status: prsRes.status });
   }
 
+  const BOT_LOGINS = new Set([
+    'claude',
+    'anthropic',
+    'anthropic-ai',
+    'copilot',
+    'github-copilot',
+    'chatgpt',
+    'openai',
+    'gpt-engineer',
+    'devin',
+    'devin-ai',
+    'cursor',
+    'codeium',
+    'sweep-ai',
+    'sourcery-ai',
+    'github-actions',
+    'dependabot',
+    'renovate',
+    'renovate-bot',
+    'snyk-bot',
+    'imgbot',
+    'allcontributors',
+  ]);
+  const isHuman = (c) => {
+    if (!c || !c.login) return false;
+    if (c.type && c.type !== 'User') return false;
+    const login = c.login.toLowerCase();
+    if (login.endsWith('[bot]') || login.endsWith('-bot')) return false;
+    return !BOT_LOGINS.has(login);
+  };
+
   let contributorsCount = null;
   let contributors = [];
   if (contribRes.ok) {
     const j = await contribRes.json();
     if (Array.isArray(j)) {
-      contributorsCount = j.length;
-      contributors = j
-        .filter((c) => c && c.login)
+      const humans = j.filter(isHuman);
+      contributorsCount = humans.length;
+      contributors = humans
         .map((c) => ({
           login: c.login,
           avatar: c.avatar_url || null,
