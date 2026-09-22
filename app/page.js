@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
+const PROFILE_OWNER = process.env.NEXT_PUBLIC_GITHUB_PROFILE_OWNER || '169Pi';
+const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
 const STORAGE_KEY = 'preptember.progress.v2';
@@ -11,18 +13,18 @@ const STORAGE_KEY = 'preptember.progress.v2';
 const STEPS = [
   { id: 'star', tag: '01', title: `Star ${REPO}`, desc: 'takes 2 seconds', ctaText: 'Star it ↗', ctaHref: `https://github.com/${OWNER}/${REPO}` },
   { id: 'discord', tag: '02', title: 'Join the Discord', desc: 'where you get help', ctaText: 'Join ↗', ctaHref: DISCORD_URL },
-  { id: 'fork', tag: '03', title: 'Fork the repo', desc: 'make your own copy', help: true, ctaText: 'Open repo ↗', ctaHref: `https://github.com/${OWNER}/${REPO}`,
-    guide: 'A fork is your personal copy of the repo. Click Fork (top-right) then Create fork. You will make your change in your copy, then offer it back.' },
-  { id: 'add', tag: '04', title: 'Add your work to the README', desc: 'your creative bit', help: true,
-    guide: 'In your fork, open README.md, scroll to the Wall of Fame section, and add your representation of the model there. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
-    cmd: 'README.md  →  ## 🏆 Wall of Fame', drafter: true },
-  { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${OWNER}/${REPO}/compare`,
-    guide: 'A pull request asks 169Pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
-    cmd: '[169pi] Your Name — Your Medium' },
+  { id: 'fork', tag: '03', title: `Fork ${PROFILE_OWNER}/${PROFILE_REPO}`, desc: 'make your own copy', help: true, ctaText: 'Open repo ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}`,
+    guide: `A fork is your personal copy of the repo. You are forking ${PROFILE_OWNER}/${PROFILE_REPO} — the 169pi org profile — because that is where your entry gets published. Click Fork (top-right) then Create fork. You will make your change in your copy, then offer it back.` },
+  { id: 'add', tag: '04', title: 'Add your entry to the profile README', desc: 'your creative bit', help: true,
+    guide: 'In your fork, open profile/README.md, scroll to the "Make this README yours" section, and add your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
+    cmd: 'profile/README.md  →  ## 🎨 Make this README yours', drafter: true },
+  { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
+    guide: 'A pull request asks 169pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
+    cmd: '@your-github-handle: <what you’re calling it>' },
   { id: 'review', tag: '06', title: 'Wait for the review', desc: 'reviewed weekly', help: true, ctaText: 'Discuss in Discord ↗', ctaHref: DISCORD_URL,
     guide: 'The team reviews weekly. If they suggest a tweak, just commit again to the same branch and your PR updates itself.' },
   { id: 'merged', tag: '07', title: 'Merged → you did it', desc: 'first contribution done', help: true,
-    guide: 'When it is merged, your work is on the Wall of Fame and 169Pi ships you swag. You just made your first open-source contribution.' },
+    guide: 'When it is merged, your entry is live on the 169pi org profile and 169pi ships you swag. You just made your first open-source contribution.' },
 ];
 
 function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -604,7 +606,7 @@ Please write my Wall of Fame block now.`;
         <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setDrafterOpen(false); }}>
           <div className="modal">
             <h3>Draft your Wall of Fame entry</h3>
-            <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into README.md under the Wall of Fame heading, commit.</p>
+            <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into profile/README.md under the &ldquo;Make this README yours&rdquo; heading, commit.</p>
             <div className="field">
               <label>Your name or GitHub handle</label>
               <input
