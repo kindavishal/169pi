@@ -17,7 +17,7 @@ const STEPS = [
   { id: 'fork', tag: '03', title: `Fork ${PROFILE_OWNER}/${PROFILE_REPO}`, desc: 'make your own copy', help: true, ctaText: 'Open repo ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}`,
     guide: `A fork is your personal copy of the repo. You are forking ${PROFILE_OWNER}/${PROFILE_REPO} — the 169pi org profile — because that is where your entry gets published. Click Fork (top-right) then Create fork. You will make your change in your copy, then offer it back.` },
   { id: 'add', tag: '04', title: 'Add your entry to the profile README', desc: 'your creative bit', help: true,
-    guide: 'In your fork, open profile/README.md, scroll to the "Make this README yours" section, and add your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
+    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — scroll to the "Make this README yours" section, and add your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
     cmd: 'profile/README.md  →  ## 🎨 Make this README yours', drafter: true },
   { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
     guide: 'A pull request asks 169pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
