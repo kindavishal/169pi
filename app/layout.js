@@ -3,7 +3,7 @@ import './globals.css';
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
-  'http://localhost:3001';
+  'https://169pi-kappa.vercel.app';
 
 const TITLE = 'Get ready for Hacktoberfest with 169Pi';
 const DESCRIPTION = 'Make your first open-source contribution — we’ll walk you through every step.';
