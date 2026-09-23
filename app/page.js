@@ -6,10 +6,10 @@ const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
 const PROFILE_OWNER = process.env.NEXT_PUBLIC_GITHUB_PROFILE_OWNER || '169Pi';
 const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
-const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/ZBJ4aMWcj';
+const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/QqkrMmvt4';
 const HACKTOBERFEST_START = '2026-10-01T00:00:00';
 const NEXT_MERGE_DATE = 'October 6, 2026';
-const STORAGE_KEY = 'preptember.progress.v2';
+const STORAGE_KEY = 'preptember.progress.v3';
 
 const STEPS = [
   { id: 'star', tag: '01', title: `Star ${REPO}`, desc: 'takes 2 seconds', ctaText: 'Star it ↗', ctaHref: `https://github.com/${OWNER}/${REPO}` },
@@ -17,7 +17,7 @@ const STEPS = [
   { id: 'fork', tag: '03', title: `Fork ${PROFILE_OWNER}/${PROFILE_REPO}`, desc: 'make your own copy', help: true, ctaText: 'Open repo ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}`,
     guide: `A fork is your personal copy of the repo. You are forking ${PROFILE_OWNER}/${PROFILE_REPO} — the 169pi org profile — because that is where your entry gets published. Click Fork (top-right) then Create fork. You will make your change in your copy, then offer it back.` },
   { id: 'add', tag: '04', title: 'Add your entry to the profile README', desc: 'your creative bit', help: true,
-    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — scroll to the "Make this README yours" section, and add your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Use the drafter or ask Alpie in the panel on the right.',
+    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — scroll to the "Make this README yours" section, and add your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Use the drafter or tap Ask Alpie in the bottom-right corner.',
     cmd: 'profile/README.md  →  ## 🎨 Make this README yours', drafter: true },
   { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
     guide: 'A pull request asks 169pi to add your change to their repo. Click Contribute then Open pull request, and name it exactly like this:',
@@ -164,9 +164,6 @@ export default function Home() {
         setDone((prev) => {
           const next = { ...prev };
           if (j.starred) next.star = true;
-          if (j.forked) next.fork = true;
-          if (j.openPr || j.mergedPr) next.pr = true;
-          if (j.mergedPr) next.merged = true;
           return next;
         });
       }
@@ -222,7 +219,7 @@ export default function Home() {
     const userPrompt = `My name/handle: ${name.trim()}
 Medium: ${medium}
 A hint about what I want it to say / the vibe: ${vibe.trim() || '(surprise me)'}
-Please write my Wall of Fame block now.`;
+Please write my "Make this README yours" entry now.`;
     try {
       const res = await fetch('/api/alpie', {
         method: 'POST',
@@ -264,7 +261,7 @@ Please write my Wall of Fame block now.`;
         <div className="nav-logo">
           <img src="/alpie-logo.webp" alt="169Pi logo" style={{ width: 26, height: 26, objectFit: 'contain' }} />
         </div>
-        <div>
+        <div className="nav-brand">
           <div className="nav-title">169Pi</div>
           <div className="nav-sub">Preptember · road to Hacktoberfest</div>
         </div>
@@ -280,7 +277,7 @@ Please write my Wall of Fame block now.`;
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
             </svg>
-            <span>Sign in with GitHub</span>
+            <span>Sign in<span className="hide-sm"> with GitHub</span></span>
           </a>
         )}
         <a
@@ -288,6 +285,7 @@ Please write my Wall of Fame block now.`;
           target="_blank"
           rel="noreferrer"
           className="nav-btn nav-btn-github"
+          aria-label={`${REPO} repo on GitHub`}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
@@ -299,6 +297,7 @@ Please write my Wall of Fame block now.`;
           target="_blank"
           rel="noreferrer"
           className="nav-btn nav-btn-discord"
+          aria-label="Join the 169pi Discord"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M20.32 4.57A19.79 19.79 0 0 0 16.56 3.4a.07.07 0 0 0-.07.03c-.16.29-.34.66-.47.96a18.28 18.28 0 0 0-5.48 0c-.13-.31-.32-.68-.48-.96a.08.08 0 0 0-.08-.03c-1.3.22-2.55.6-3.75 1.17a.07.07 0 0 0-.03.03C1.99 9.06 1.1 13.4 1.54 17.7a.08.08 0 0 0 .03.06c1.55 1.14 3.05 1.83 4.53 2.29a.08.08 0 0 0 .09-.03c.35-.48.66-.98.93-1.51a.08.08 0 0 0-.04-.11 12.6 12.6 0 0 1-1.8-.86.08.08 0 0 1-.01-.13c.12-.09.24-.19.36-.28a.08.08 0 0 1 .08-.01c3.78 1.73 7.86 1.73 11.6 0a.08.08 0 0 1 .08.01c.12.1.24.19.36.29a.08.08 0 0 1-.01.13c-.57.34-1.17.62-1.8.86a.08.08 0 0 0-.04.11c.28.53.59 1.03.93 1.51a.08.08 0 0 0 .09.03c1.49-.46 2.99-1.15 4.54-2.29a.08.08 0 0 0 .03-.06c.52-5.02-.87-9.32-3.68-13.16a.06.06 0 0 0-.03-.03zM8.52 15.09c-.9 0-1.63-.83-1.63-1.84s.72-1.84 1.63-1.84c.92 0 1.65.83 1.63 1.84 0 1.01-.72 1.84-1.63 1.84zm6.03 0c-.9 0-1.63-.83-1.63-1.84s.72-1.84 1.63-1.84c.92 0 1.65.83 1.63 1.84 0 1.01-.71 1.84-1.63 1.84z" />
@@ -381,6 +380,47 @@ Please write my Wall of Fame block now.`;
         </div>
       </div>
 
+      {/* Try Alpie-Core */}
+      <div className="try-wrap">
+        <div className="try-card">
+          <div className="try-left">
+            <div className="try-eyebrow">TRY ALPIE-CORE</div>
+            <h3 className="try-title">Run the model before you draw on it.</h3>
+            <p className="try-sub">Pick where you like to work — the weights and demos are already up.</p>
+          </div>
+          <div className="try-buttons">
+            <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer" className="try-btn try-btn-hf">
+              <span className="try-btn-icon" aria-hidden="true">🤗</span>
+              <span className="try-btn-body">
+                <span className="try-btn-name">Hugging Face</span>
+                <span className="try-btn-sub">169Pi/Alpie-Core</span>
+              </span>
+            </a>
+            <a href="https://ollama.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-ollama">
+              <span className="try-btn-icon" aria-hidden="true">🦙</span>
+              <span className="try-btn-body">
+                <span className="try-btn-name">Ollama</span>
+                <span className="try-btn-sub">ollama run 169pi</span>
+              </span>
+            </a>
+            <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-kaggle">
+              <span className="try-btn-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M18.83 21.06a.34.34 0 0 1-.34.34h-3.14a.5.5 0 0 1-.4-.2l-4.4-5.63-1.28 1.22v4.27a.34.34 0 0 1-.34.34H6.4a.34.34 0 0 1-.34-.34V2.94A.34.34 0 0 1 6.4 2.6h2.53c.19 0 .34.15.34.34v10.6l5-5.02a.5.5 0 0 1 .35-.15h3.24c.31 0 .43.35.22.55L13 13.68l5.75 7.11a.35.35 0 0 1 .08.27z"/>
+                </svg>
+              </span>
+              <span className="try-btn-body">
+                <span className="try-btn-name">Kaggle</span>
+                <span className="try-btn-sub">notebooks & data</span>
+              </span>
+            </a>
+          </div>
+          <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer" className="try-docs">
+            Read the docs ↗
+          </a>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="content">
         {/* Steps */}
@@ -390,7 +430,7 @@ Please write my Wall of Fame block now.`;
               <h2>Your first contribution, step by step</h2>
               <p>
                 Hit <strong>Help</strong> on any step for a short how-to. Check it off once you&apos;ve done it on GitHub
-                {user ? ' (or sign in — we auto-check star, fork and PR).' : ' — or sign in with GitHub and we auto-check star, fork and PR.'}
+                {user ? ' (star is auto-checked when you sign in).' : ' — sign in with GitHub and the star step gets auto-checked.'}
               </p>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
@@ -614,7 +654,7 @@ Please write my Wall of Fame block now.`;
             </div>
             <div className="alpie-foot">
               Answers come from Alpie-Core, right here — deeper docs at{' '}
-              <a href="https://169pi-kappa.vercel.app" target="_blank" rel="noreferrer">169pi-kappa.vercel.app</a>{' '}
+              <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer">playground.169pi.ai</a>{' '}
               or try the model at{' '}
               <a href="https://alpie.ai" target="_blank" rel="noreferrer">alpie.ai</a>.
             </div>
@@ -637,7 +677,7 @@ Please write my Wall of Fame block now.`;
       {drafterOpen && (
         <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setDrafterOpen(false); }}>
           <div className="modal">
-            <h3>Draft your Wall of Fame entry</h3>
+            <h3>Draft your README entry</h3>
             <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into profile/README.md under the &ldquo;Make this README yours&rdquo; heading, commit.</p>
             <div className="field">
               <label>Your name or GitHub handle</label>
@@ -699,7 +739,7 @@ Please write my Wall of Fame block now.`;
         </div>
       )}
 
-      <div style={{ padding: '24px 56px 40px', fontSize: 12, color: '#8a8578', textAlign: 'center' }}>
+      <div className="site-footer">
         Built by{' '}
         <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">
           @kindavishal
