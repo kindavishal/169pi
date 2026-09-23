@@ -582,10 +582,6 @@ Please write my "Make this README yours" entry now.`;
                       )}
                       <span className="leaderboard-login">@{c.login}</span>
                     </a>
-                    <span className="leaderboard-count">
-                      {c.prs}
-                      <span className="leaderboard-count-label"> {c.prs === 1 ? 'PR' : 'PRs'}</span>
-                    </span>
                   </li>
                 );
               })}
