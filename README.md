@@ -28,6 +28,7 @@ See `.env.example` for the full list with defaults.
 
 | Var | Required | What it does |
 |---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Powers the live "N people here right now" presence counter via Supabase Realtime. Leave blank and the counter simply doesn't render. |
 | `ALPIE_API_BASE` / `ALPIE_API_KEY` | Yes | Alpie API endpoint and key for chat and the drafter |
 | `ALPIE_MODEL` | No | Model name (default `alpie-core`) |
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | Yes | From your GitHub OAuth app (see below) |
