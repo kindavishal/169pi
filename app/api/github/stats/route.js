@@ -136,7 +136,7 @@ export async function GET(req) {
           login: u.login,
           avatar: u.avatar_url || null,
           prs: 1,
-          href: u.html_url || `https://github.com/${u.login}`,
+          href: `https://github.com/${owner}/${repo}/pulls?q=${encodeURIComponent(`is:pr author:${u.login}`)}`,
         });
       }
     }
