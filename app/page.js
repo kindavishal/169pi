@@ -7,7 +7,7 @@ const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
 const PROFILE_OWNER = process.env.NEXT_PUBLIC_GITHUB_PROFILE_OWNER || '169Pi';
 const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
-const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/QqkrMmvt4';
+const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/GwJP7MsZp7';
 const NEXT_MERGE_DATE = 'October 6, 2026';
 const STORAGE_KEY = 'preptember.progress.v3';
 
