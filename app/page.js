@@ -643,7 +643,7 @@ Please write my "Make this README yours" entry now.`;
             </div>
             <div className="alpie-foot">
               Answers come from Alpie-Core, right here — deeper docs at{' '}
-              <a href="https://169pi-kappa.vercel.app" target="_blank" rel="noreferrer">169pi-kappa.vercel.app</a>{' '}
+              <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer">playground.169pi.ai</a>{' '}
               or try the model at{' '}
               <a href="https://alpie.ai" target="_blank" rel="noreferrer">alpie.ai</a>.
             </div>
