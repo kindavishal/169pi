@@ -537,11 +537,11 @@ Please write my "Make this README yours" entry now.`;
               <div>
                 <div className="leaderboard-title">Contributor leaderboard</div>
                 <div className="leaderboard-sub">
-                  {contributorsCount ?? '—'} contributors to {statsRepo.owner}/{statsRepo.repo}
+                  {contributorsCount ?? '—'} people have opened PRs to {statsRepo.owner}/{statsRepo.repo}
                 </div>
               </div>
               <a
-                href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/graphs/contributors`}
+                href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/pulls?q=is%3Apr`}
                 target="_blank"
                 rel="noreferrer"
                 className="leaderboard-all"
@@ -583,8 +583,8 @@ Please write my "Make this README yours" entry now.`;
                       <span className="leaderboard-login">@{c.login}</span>
                     </a>
                     <span className="leaderboard-count">
-                      {c.contributions}
-                      <span className="leaderboard-count-label"> {c.contributions === 1 ? 'commit' : 'commits'}</span>
+                      {c.prs}
+                      <span className="leaderboard-count-label"> {c.prs === 1 ? 'PR' : 'PRs'}</span>
                     </span>
                   </li>
                 );
