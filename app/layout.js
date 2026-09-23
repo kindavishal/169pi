@@ -1,9 +1,40 @@
 import './globals.css';
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL && `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ||
+  'http://localhost:3001';
+
+const TITLE = 'Get ready for Hacktoberfest with 169Pi';
+const DESCRIPTION = 'Make your first open-source contribution — we’ll walk you through every step.';
+
 export const metadata = {
-  title: 'Get ready for Hacktoberfest with 169Pi',
-  description:
-    'Preptember — the warm-up to Hacktoberfest. Make your first open-source contribution to 169Pi\'s Alpie-Core, the easy way.',
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16.png', type: 'image/png', sizes: '16x16' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/manifest.webmanifest',
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    type: 'website',
+    url: '/',
+    siteName: '169Pi Preptember',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: TITLE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/og-image.png'],
+  },
 };
 
 export default function RootLayout({ children }) {
