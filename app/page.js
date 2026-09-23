@@ -8,7 +8,6 @@ const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
 const PROFILE_OWNER = process.env.NEXT_PUBLIC_GITHUB_PROFILE_OWNER || '169Pi';
 const PROFILE_REPO = process.env.NEXT_PUBLIC_GITHUB_PROFILE_REPO || '.github';
 const DISCORD_URL = process.env.NEXT_PUBLIC_DISCORD_URL || 'https://discord.gg/QqkrMmvt4';
-const HACKTOBERFEST_START = '2026-10-01T00:00:00';
 const NEXT_MERGE_DATE = 'October 6, 2026';
 const STORAGE_KEY = 'preptember.progress.v3';
 
@@ -98,7 +97,7 @@ export default function Home() {
   const [drafterBusy, setDrafterBusy] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const cd = useCountdown(HACKTOBERFEST_START);
+  const cd = useCountdown(NEXT_MERGE_DATE);
   const hereNow = usePresence();
 
   useEffect(() => {
@@ -519,16 +518,15 @@ Please write my "Make this README yours" entry now.`;
         {/* Right column */}
         <div className="right-col">
           <div className="dark-card">
-            <div className="countdown-label">COUNTDOWN TO HACKTOBERFEST</div>
+            <div className="countdown-label">COUNTDOWN TO NEXT MERGE</div>
             <div className="countdown-row">
               <span className="countdown-days">{cd.days}</span>
               <span className="countdown-days-label">days</span>
             </div>
             <div className="countdown-clock">{cd.clock}</div>
-            <div className="countdown-start">starts October 1, 2026</div>
             <div className="countdown-merge">
               <span className="countdown-merge-dot" />
-              Next merge: <strong>{NEXT_MERGE_DATE}</strong>
+              Merges <strong>{NEXT_MERGE_DATE}</strong>
             </div>
           </div>
 
@@ -537,11 +535,11 @@ Please write my "Make this README yours" entry now.`;
               <div>
                 <div className="leaderboard-title">Contributor leaderboard</div>
                 <div className="leaderboard-sub">
-                  {contributorsCount ?? '—'} contributors to {statsRepo.owner}/{statsRepo.repo}
+                  {contributorsCount ?? '—'} people have opened PRs to {statsRepo.owner}/{statsRepo.repo}
                 </div>
               </div>
               <a
-                href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/graphs/contributors`}
+                href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/pulls?q=is%3Apr`}
                 target="_blank"
                 rel="noreferrer"
                 className="leaderboard-all"
@@ -582,10 +580,6 @@ Please write my "Make this README yours" entry now.`;
                       )}
                       <span className="leaderboard-login">@{c.login}</span>
                     </a>
-                    <span className="leaderboard-count">
-                      {c.contributions}
-                      <span className="leaderboard-count-label"> {c.contributions === 1 ? 'commit' : 'commits'}</span>
-                    </span>
                   </li>
                 );
               })}
