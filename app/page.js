@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { usePresence } from '../lib/usePresence';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
@@ -98,6 +99,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
 
   const cd = useCountdown(HACKTOBERFEST_START);
+  const hereNow = usePresence();
 
   useEffect(() => {
     try {
@@ -350,6 +352,13 @@ Please write my "Make this README yours" entry now.`;
             <span className="live-dot" />
             <span className="small-label">LIVE FROM {statsRepo.owner.toUpperCase()}/{statsRepo.repo.toUpperCase()}</span>
           </div>
+          {hereNow !== null && (
+            <div className="presence" aria-live="polite">
+              <span className="presence-dot" />
+              <span className="presence-num">{hereNow}</span>
+              {hereNow === 1 ? ' person here right now' : ' people here right now'}
+            </div>
+          )}
           <div className="stars-panel">
             <div className="stars-row">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="#E8A317" stroke="#E8A317" strokeWidth="1">
