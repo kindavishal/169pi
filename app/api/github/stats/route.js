@@ -49,11 +49,10 @@ export async function GET(req) {
   const starsOwner = process.env.GITHUB_STARS_OWNER || '169Pi';
   const starsRepo = process.env.GITHUB_STARS_REPO || 'Alpie-Core';
 
-  const [starsRes, repoRes, prsRes, contribRes] = await Promise.all([
+  const [starsRes, repoRes, prsRes] = await Promise.all([
     gh(`/repos/${starsOwner}/${starsRepo}`, token),
     gh(`/repos/${owner}/${repo}`, token),
-    gh(`/repos/${owner}/${repo}/pulls?state=all&per_page=8&sort=created&direction=desc`, token),
-    gh(`/repos/${owner}/${repo}/contributors?per_page=100&anon=1`, token),
+    gh(`/repos/${owner}/${repo}/pulls?state=all&per_page=100&sort=created&direction=desc`, token),
   ]);
 
   const errors = [];
@@ -75,10 +74,12 @@ export async function GET(req) {
 
   let prsCount = null;
   let recentPRs = [];
+  let pulls = [];
   if (prsRes.ok) {
     const j = await prsRes.json();
-    prsCount = j.length;
-    recentPRs = j.slice(0, 4).map((p) => ({
+    pulls = Array.isArray(j) ? j : [];
+    prsCount = pulls.length;
+    recentPRs = pulls.slice(0, 4).map((p) => ({
       user: p.user?.login || 'unknown',
       avatar: p.user?.avatar_url || null,
       when: relTime(p.created_at),
@@ -119,26 +120,28 @@ export async function GET(req) {
     return !BOT_LOGINS.has(login);
   };
 
+  // Leaderboard: rank people by how many PRs they've opened.
   let contributorsCount = null;
   let contributors = [];
-  if (contribRes.ok) {
-    const j = await contribRes.json();
-    if (Array.isArray(j)) {
-      const humans = j.filter(isHuman);
-      contributorsCount = humans.length;
-      contributors = humans
-        .map((c) => ({
-          login: c.login,
-          avatar: c.avatar_url || null,
-          contributions: c.contributions || 0,
-          href: c.html_url || `https://github.com/${c.login}`,
-        }))
-        .sort((a, b) => b.contributions - a.contributions);
-    } else {
-      contributorsCount = 0;
+  if (prsRes.ok) {
+    const byAuthor = new Map();
+    for (const p of pulls) {
+      const u = p.user;
+      if (!isHuman(u)) continue;
+      const existing = byAuthor.get(u.login);
+      if (existing) {
+        existing.prs += 1;
+      } else {
+        byAuthor.set(u.login, {
+          login: u.login,
+          avatar: u.avatar_url || null,
+          prs: 1,
+          href: `https://github.com/${owner}/${repo}/pulls?q=${encodeURIComponent(`is:pr author:${u.login}`)}`,
+        });
+      }
     }
-  } else {
-    errors.push({ endpoint: 'contributors', status: contribRes.status });
+    contributors = Array.from(byAuthor.values()).sort((a, b) => b.prs - a.prs);
+    contributorsCount = contributors.length;
   }
 
   const data = {
