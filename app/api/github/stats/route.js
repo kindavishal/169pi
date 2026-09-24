@@ -1,22 +1,10 @@
 import { NextResponse } from 'next/server';
-import { verify, sessionCookieName } from '../../../../lib/session';
 
 export const runtime = 'nodejs';
 export const revalidate = 60;
 
 const CACHE_TTL_MS = 60 * 1000;
 let cache = { at: 0, data: null };
-
-function sessionToken(req) {
-  const cookieHeader = req.headers.get('cookie') || '';
-  const raw = cookieHeader
-    .split(';')
-    .map((s) => s.trim())
-    .find((s) => s.startsWith(`${sessionCookieName()}=`));
-  if (!raw) return null;
-  const s = verify(raw.slice(sessionCookieName().length + 1));
-  return s ? s.t : null;
-}
 
 function relTime(iso) {
   const diff = Date.now() - new Date(iso).getTime();
@@ -37,8 +25,11 @@ async function gh(path, token) {
   return fetch(`https://api.github.com${path}`, { headers, cache: 'no-store' });
 }
 
-export async function GET(req) {
-  const token = process.env.GITHUB_TOKEN || sessionToken(req) || null;
+export async function GET() {
+  // Stats are public data (stars, PRs, contributors) and must not depend on any
+  // individual user's OAuth token — that token can expire while their session
+  // cookie is still valid, which 401s every call and blanks the whole panel.
+  const token = process.env.GITHUB_TOKEN || null;
 
   if (cache.data && Date.now() - cache.at < CACHE_TTL_MS) {
     return NextResponse.json({ ...cache.data, cached: true });
