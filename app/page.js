@@ -164,7 +164,12 @@ export default function Home() {
       if (j && j.authenticated) {
         setDone((prev) => {
           const next = { ...prev };
+          // Auto-check every step GitHub can verify for us, so the checklist
+          // reflects real progress instead of relying on manual ticking.
           if (j.starred) next.star = true;
+          if (j.forked) next.fork = true;
+          if (j.openPr || j.mergedPr) next.pr = true;
+          if (j.mergedPr) next.merged = true;
           return next;
         });
       }
@@ -209,6 +214,11 @@ export default function Home() {
     } finally {
       setChatBusy(false);
     }
+  }
+
+  function askAlpie(prompt) {
+    setChatOpen(true);
+    sendChat(prompt);
   }
 
   async function runDrafter() {
@@ -340,8 +350,16 @@ Please write my "Make this README yours" entry now.`;
             <span className="chip">Real 169pi swag when merged</span>
           </div>
 
-          <div className="benchmarks" aria-label="Alpie-Core benchmarks">
-            <div className="benchmarks-label">Alpie-Core, in numbers</div>
+          <details className="benchmarks" aria-label="Alpie-Core benchmarks">
+            <summary className="benchmarks-summary">
+              <span className="benchmarks-label">Alpie-Core, in numbers</span>
+              <span className="benchmarks-hint">the technical bits, if you&apos;re curious</span>
+              <span className="benchmarks-chevron" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </span>
+            </summary>
             <div className="benchmarks-grid">
               <div className="bench"><span className="bench-num">92.75%</span><span className="bench-cap">GSM8K</span></div>
               <div className="bench"><span className="bench-num">81.28%</span><span className="bench-cap">MMLU</span></div>
@@ -349,7 +367,7 @@ Please write my "Make this README yours" entry now.`;
               <div className="bench"><span className="bench-num">65K</span><span className="bench-cap">context</span></div>
               <div className="bench"><span className="bench-num">~16 GB</span><span className="bench-cap">VRAM</span></div>
             </div>
-          </div>
+          </details>
         </div>
 
         {/* Stats */}
@@ -429,6 +447,32 @@ Please write my "Make this README yours" entry now.`;
         </div>
       </div>
 
+      {/* Hosting a session — resources for community leaders */}
+      <div className="organize-wrap">
+        <div className="organize-card">
+          <div className="organize-left">
+            <div className="organize-eyebrow">RUNNING A SESSION?</div>
+            <h3 className="organize-title">Host Preptember for your community.</h3>
+            <p className="organize-sub">
+              Meetup, campus club or Discord — bring people through their first contribution together.
+              Get a ready-made organizer&apos;s guide (agenda, checklist, talking points) drafted by Alpie in seconds.
+            </p>
+          </div>
+          <div className="organize-actions">
+            <button
+              type="button"
+              className="btn-solid organize-btn"
+              onClick={() => askAlpie('Help me prepare an organizer’s guide for hosting a local Preptember contribution session — include a suggested agenda, a prep checklist, talking points for explaining forks and pull requests to newcomers, and tips for helping a group open their first PR to 169Pi/.github.')}
+            >
+              Help me prepare an organizer&apos;s guide →
+            </button>
+            <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="organize-link">
+              Coordinate with 169pi in Discord ↗
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="content">
         {/* Steps */}
@@ -438,7 +482,7 @@ Please write my "Make this README yours" entry now.`;
               <h2>Your first contribution, step by step</h2>
               <p>
                 Hit <strong>Help</strong> on any step for a short how-to. Check it off once you&apos;ve done it on GitHub
-                {user ? ' (star is auto-checked when you sign in).' : ' — sign in with GitHub and the star step gets auto-checked.'}
+                {user ? ' — starring, forking and opening your PR are auto-checked from GitHub.' : ' — sign in with GitHub and the star, fork and PR steps get auto-checked for you.'}
               </p>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
