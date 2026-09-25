@@ -692,38 +692,74 @@ Please write my "Make this README yours" entry now.`;
           <div className="try-left">
             <div className="try-eyebrow">TRY ALPIE-CORE</div>
             <h3 className="try-title">Run the model before you draw on it.</h3>
-            <p className="try-sub">Pick where you like to work — the weights and demos are already up.</p>
+            <p className="try-sub">Easiest way in — just open it in your browser, no setup. Developers can grab the weights below.</p>
           </div>
-          <div className="try-buttons">
-            <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer" className="try-btn try-btn-hf">
-              <span className="try-btn-icon" aria-hidden="true">🤗</span>
-              <span className="try-btn-body">
-                <span className="try-btn-name">Hugging Face</span>
-                <span className="try-btn-sub">169Pi/Alpie-Core</span>
-              </span>
-            </a>
-            <a href="https://ollama.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-ollama">
-              <span className="try-btn-icon" aria-hidden="true">🦙</span>
-              <span className="try-btn-body">
-                <span className="try-btn-name">Ollama</span>
-                <span className="try-btn-sub">ollama run 169pi</span>
-              </span>
-            </a>
-            <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-kaggle">
-              <span className="try-btn-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M18.83 21.06a.34.34 0 0 1-.34.34h-3.14a.5.5 0 0 1-.4-.2l-4.4-5.63-1.28 1.22v4.27a.34.34 0 0 1-.34.34H6.4a.34.34 0 0 1-.34-.34V2.94A.34.34 0 0 1 6.4 2.6h2.53c.19 0 .34.15.34.34v10.6l5-5.02a.5.5 0 0 1 .35-.15h3.24c.31 0 .43.35.22.55L13 13.68l5.75 7.11a.35.35 0 0 1 .08.27z"/>
-                </svg>
-              </span>
-              <span className="try-btn-body">
-                <span className="try-btn-name">Kaggle</span>
-                <span className="try-btn-sub">notebooks & data</span>
-              </span>
+          <div className="try-main">
+            <div className="try-primary">
+              <a href="https://alpie.ai" target="_blank" rel="noreferrer" className="try-btn try-btn-primary try-btn-alpie">
+                <span className="try-btn-icon" aria-hidden="true">
+                  <img src="/alpie-logo.webp" alt="" style={{ width: 20, height: 20, objectFit: 'contain' }} />
+                </span>
+                <span className="try-btn-body">
+                  <span className="try-btn-name">Chat with Alpie</span>
+                  <span className="try-btn-sub">alpie.ai · no setup, just try it</span>
+                </span>
+              </a>
+              <a href="https://playground.169pi.ai/dashboard" target="_blank" rel="noreferrer" className="try-btn try-btn-primary try-btn-playground">
+                <span className="try-btn-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+                <span className="try-btn-body">
+                  <span className="try-btn-name">Open the Playground</span>
+                  <span className="try-btn-sub">playground.169pi.ai</span>
+                </span>
+              </a>
+            </div>
+
+            <details className="try-more">
+              <summary className="try-more-summary">
+                <span>More ways to run it — for developers</span>
+                <span className="try-more-chevron" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </span>
+              </summary>
+              <div className="try-buttons">
+                <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer" className="try-btn try-btn-hf">
+                  <span className="try-btn-icon" aria-hidden="true">🤗</span>
+                  <span className="try-btn-body">
+                    <span className="try-btn-name">Hugging Face</span>
+                    <span className="try-btn-sub">169Pi/Alpie-Core</span>
+                  </span>
+                </a>
+                <a href="https://ollama.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-ollama">
+                  <span className="try-btn-icon" aria-hidden="true">🦙</span>
+                  <span className="try-btn-body">
+                    <span className="try-btn-name">Ollama</span>
+                    <span className="try-btn-sub">ollama run 169pi</span>
+                  </span>
+                </a>
+                <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-kaggle">
+                  <span className="try-btn-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M18.83 21.06a.34.34 0 0 1-.34.34h-3.14a.5.5 0 0 1-.4-.2l-4.4-5.63-1.28 1.22v4.27a.34.34 0 0 1-.34.34H6.4a.34.34 0 0 1-.34-.34V2.94A.34.34 0 0 1 6.4 2.6h2.53c.19 0 .34.15.34.34v10.6l5-5.02a.5.5 0 0 1 .35-.15h3.24c.31 0 .43.35.22.55L13 13.68l5.75 7.11a.35.35 0 0 1 .08.27z"/>
+                    </svg>
+                  </span>
+                  <span className="try-btn-body">
+                    <span className="try-btn-name">Kaggle</span>
+                    <span className="try-btn-sub">notebooks & data</span>
+                  </span>
+                </a>
+              </div>
+            </details>
+
+            <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer" className="try-docs">
+              Read the docs ↗
             </a>
           </div>
-          <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer" className="try-docs">
-            Read the docs ↗
-          </a>
         </div>
       </div>
 

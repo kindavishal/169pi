@@ -368,9 +368,10 @@ h1.hero-h .accent { color: var(--accent); }
 }
 .try-title { margin: 0 0 4px; font-size: 20px; font-weight: 700; letter-spacing: -0.4px; color: var(--text); }
 .try-sub { margin: 0; font-size: 13px; color: var(--muted); }
+.try-main { flex: 2 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.try-primary { display: flex; flex-wrap: wrap; gap: 10px; }
 .try-buttons {
-  display: flex; flex-wrap: wrap; gap: 10px;
-  flex: 2 1 auto;
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;
 }
 .try-btn {
   flex: 1 1 180px;
@@ -381,6 +382,10 @@ h1.hero-h .accent { color: var(--accent); }
   transition: transform .12s, box-shadow .12s, filter .12s;
 }
 .try-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 8px 22px rgba(0,0,0,0.15); }
+/* Primary "easiest" options — a touch larger and more prominent */
+.try-btn-primary { flex: 1 1 220px; padding: 13px 16px; }
+.try-btn-alpie { background: #1B7A6E; }
+.try-btn-playground { background: #132B33; }
 .try-btn-icon {
   width: 34px; height: 34px; flex-shrink: 0; border-radius: 9px;
   background: rgba(255,255,255,0.18);
@@ -395,9 +400,21 @@ h1.hero-h .accent { color: var(--accent); }
 .try-btn-ollama { background: #111111; }
 .try-btn-kaggle { background: #20BEFF; }
 .try-docs {
-  flex-shrink: 0; font-size: 13px; font-weight: 700; color: var(--accent);
+  align-self: flex-start; font-size: 13px; font-weight: 700; color: var(--accent);
   padding: 0 4px;
 }
+/* Collapsed "more ways to run it" for advanced users */
+.try-more { border-top: 1px solid var(--border); padding-top: 10px; }
+.try-more-summary {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; list-style: none; user-select: none;
+  font-size: 12.5px; font-weight: 700; color: var(--muted-2);
+}
+.try-more-summary::-webkit-details-marker { display: none; }
+.try-more-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.try-more-chevron { display: flex; color: var(--muted-2); transition: transform .18s ease; }
+.try-more[open] .try-more-chevron { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .try-more-chevron { transition: none; } }
 @media (max-width: 720px) {
   .try-card { padding: 16px; gap: 14px; }
   .try-btn { flex: 1 1 100%; }
