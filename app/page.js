@@ -263,6 +263,84 @@ function buildStudioSvg({ handle, message, theme }) {
 </svg>`;
 }
 
+const THEME_KEY = 'preptember.theme';
+function applyTheme(pref) {
+  try {
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const resolved = pref === 'system' ? (sysDark ? 'dark' : 'light') : pref;
+    document.documentElement.setAttribute('data-theme', resolved);
+  } catch {}
+}
+const THEME_OPTIONS = [
+  {
+    id: 'light', label: 'Light',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2" />
+        <path d="M12 2v2.5M12 19.5V22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M2 12h2.5M19.5 12H22M4.5 19.5l1.8-1.8M17.7 6.3l1.8-1.8" />
+      </svg>
+    ),
+  },
+  {
+    id: 'system', label: 'System',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="12" rx="2" />
+        <path d="M8 20h8M12 16v4" />
+      </svg>
+    ),
+  },
+  {
+    id: 'dark', label: 'Dark',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+    ),
+  },
+];
+function ThemeToggle() {
+  const [pref, setPref] = useState('system');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    let p = 'system';
+    try { p = localStorage.getItem(THEME_KEY) || 'system'; } catch {}
+    setPref(p);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    applyTheme(pref);
+    try { localStorage.setItem(THEME_KEY, pref); } catch {}
+    if (pref !== 'system') return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = () => applyTheme('system');
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [pref, mounted]);
+
+  return (
+    <div className="theme-toggle" role="radiogroup" aria-label="Color theme">
+      {THEME_OPTIONS.map((o) => (
+        <button
+          key={o.id}
+          type="button"
+          role="radio"
+          aria-checked={mounted && pref === o.id}
+          aria-label={`${o.label} theme`}
+          title={`${o.label} theme`}
+          className={mounted && pref === o.id ? 'active' : ''}
+          onClick={() => setPref(o.id)}
+        >
+          {o.icon}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   const [done, setDone] = useState({});
   const [openId, setOpenId] = useState(null);
@@ -478,6 +556,7 @@ Please write my "Make this README yours" entry now.`;
           <div className="nav-sub">Preptember · road to Hacktoberfest</div>
         </div>
         <div style={{ flexGrow: 1 }} />
+        <ThemeToggle />
         {hereNow !== null && (
           <span className="presence presence-nav" aria-live="polite" title={`${hereNow} ${hereNow === 1 ? 'person' : 'people'} here right now`}>
             <span className="presence-dot" />

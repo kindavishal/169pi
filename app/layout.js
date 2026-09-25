@@ -37,10 +37,16 @@ export const metadata = {
   },
 };
 
+// Applied before first paint so there's no light-mode flash for users who
+// picked dark (or whose OS is dark). Reads the saved preference and resolves
+// "system" against the OS setting, then stamps data-theme on <html>.
+const THEME_INIT = `(function(){try{var p=localStorage.getItem('preptember.theme')||'system';var d=window.matchMedia('(prefers-color-scheme: dark)').matches;var r=p==='system'?(d?'dark':'light'):p;document.documentElement.setAttribute('data-theme',r);}catch(e){}})();`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
