@@ -1187,18 +1187,7 @@ h1.hero-h .accent {
 .canvas-error { font-size: 12.5px; color: #c0392b; font-weight: 600; }
 :root[data-theme="dark"] .canvas-error { color: #f98a80; }
 
-.canvas-templates { display: flex; flex-direction: column; gap: 8px; }
-.tpl-btn {
-  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 11px; padding: 10px 12px;
-  transition: border-color .15s, background .15s;
-}
-.tpl-btn:hover { border-color: var(--border-strong); background: var(--sunken); }
-.tpl-btn.active { border-color: var(--teal-bright); background: var(--tint-bg); }
-.tpl-swatch { width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0; border: 1px solid var(--border-strong); }
-.tpl-text { display: flex; flex-direction: column; min-width: 0; }
-.tpl-name { font-size: 14px; font-weight: 700; color: var(--text); }
-.tpl-hint { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted-2); }
+.canvas-controls .prompt-box { margin-top: 4px; }
 
 .logo-drop { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .logo-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
@@ -1216,37 +1205,22 @@ h1.hero-h .accent {
 .logo-clear { background: transparent; border: none; color: var(--faint); font-size: 13px; padding: 0 2px; }
 .logo-clear:hover { color: #c0392b; }
 
-.canvas-stage { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+/* Both post sizes stack in the stage, each with its own label + downloads. */
+.canvas-stage { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.canvas-shot { display: flex; flex-direction: column; gap: 10px; }
+.canvas-shot-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.canvas-shot-label { font-size: 13px; font-weight: 700; color: var(--text-soft); }
+.canvas-shot-dim { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted-2); }
 .canvas-preview {
   background: repeating-conic-gradient(var(--sunken-2) 0% 25%, var(--surface) 0% 50%) 50% / 20px 20px;
   border: 1px solid var(--border); border-radius: 14px; padding: 14px; overflow: hidden;
 }
 .canvas-preview svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+/* The 9:16 story is tall — cap it so the two previews sit comfortably together. */
+.canvas-preview-story { max-width: 300px; margin-left: auto; margin-right: auto; }
 .canvas-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .canvas-actions .btn-solid, .canvas-actions .btn-ghost { display: inline-flex; align-items: center; gap: 7px; }
 .canvas-actions .material-symbols-outlined { font-size: 17px; }
-.canvas-pipeline { background: var(--sunken); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-.canvas-pipeline-title {
-  font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
-  text-transform: uppercase; color: var(--teal-deep);
-}
-.canvas-pipeline ol { margin: 8px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 5px; }
-.canvas-pipeline li { font-size: 13px; color: var(--muted); line-height: 1.5; }
-.canvas-pipeline code {
-  font-family: 'Space Mono', monospace; font-size: 12px;
-  background: var(--code-bg); color: var(--code-fg); padding: 1px 5px; border-radius: 5px; border: 1px solid var(--code-border);
-}
-.canvas-pipeline strong { color: var(--text-soft); }
-
-/* Caption + posting steps (Community Canvas) — tracks match .canvas-wrap so the
-   caption lines up under the preview and the steps under the form controls. */
-.canvas-post { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
-.canvas-post .prompt-box { grid-column: 2; grid-row: 1; }
-.canvas-post .canvas-pipeline { grid-column: 1; grid-row: 1; }
-@media (max-width: 900px) {
-  .canvas-post { grid-template-columns: 1fr; gap: 16px; }
-  .canvas-post .prompt-box, .canvas-post .canvas-pipeline { grid-column: auto; grid-row: auto; }
-}
 
 /* Featured / prompt */
 .prompt-box { display: flex; flex-direction: column; gap: 10px; }
