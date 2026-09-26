@@ -127,11 +127,9 @@ function buildSvg(size, { community, logo }) {
 }
 
 // Default, ready-to-paste social caption for the post.
-function defaultCaption(community, handle) {
+function defaultCaption(community) {
   const name = (community || 'Our community').trim() || 'Our community';
-  const at = (handle || '').trim().replace(/^@/, '');
-  const by = at ? ` — hosted by @${at}` : '';
-  return `🚀 ${name} × 169Pi for Open Source${by}!
+  return `🚀 ${name} × 169Pi for Open Source!
 
 We're making our first open-source contribution to Alpie-Core — 169Pi's open 32B, 4-bit reasoning model built in India. Come build with us.
 
@@ -150,7 +148,6 @@ function defaultFeaturePrompt(community) {
 export default function Organizers() {
   // Community Canvas state
   const [community, setCommunity] = useState('');
-  const [handle, setHandle] = useState('');
   const [logo, setLogo] = useState(null);
   const [logoName, setLogoName] = useState('');
   const [logoError, setLogoError] = useState('');
@@ -176,7 +173,7 @@ export default function Organizers() {
     [community, logo]
   );
 
-  const postCaption = captionTouched ? caption : defaultCaption(community, handle);
+  const postCaption = captionTouched ? caption : defaultCaption(community);
   const featurePrompt = promptTouched ? prompt : defaultFeaturePrompt(community);
   const fileBase = `preptember-${(community || 'post').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'post'}`;
 
@@ -420,12 +417,6 @@ export default function Organizers() {
                 </div>
 
                 <div className="canvas-field">
-                  <label className="canvas-label" htmlFor="cc-handle">Handle <span className="canvas-opt">(@ — GitHub or social)</span></label>
-                  <input id="cc-handle" className="canvas-input" type="text" placeholder="your-handle"
-                    value={handle} onChange={(e) => setHandle(e.target.value)} maxLength={39} />
-                </div>
-
-                <div className="canvas-field canvas-field-full">
                   <label className="canvas-label">Campus / club logo <span className="canvas-opt">(optional)</span></label>
                   <div className="logo-drop">
                     <input ref={fileRef} id="cc-logo" type="file" accept="image/*" onChange={onLogo} className="logo-input" />
