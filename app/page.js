@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePresence } from '../lib/usePresence';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
@@ -21,7 +21,7 @@ const STEPS = [
     guide: `A <term:fork>fork</term:fork> is your personal copy of the <term:repository>repo</term:repository>. You are forking ${PROFILE_OWNER}/${PROFILE_REPO} — the 169pi org profile — because that is where your entry gets published. On the repo page, click the Fork button (top-right), then Create fork. You will make your change in your copy, then offer it back — all in your browser.`,
     mock: 'fork' },
   { id: 'add', tag: '04', title: 'Add your entry to the profile README', desc: 'your creative bit', help: true,
-    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — click the pencil (Edit) icon, scroll to the "Make this README yours" section, and paste your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Open the Creation Studio for a 1-click SVG, use the drafter, or tap Ask Alpie in the bottom-right corner.',
+    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — click the pencil (Edit) icon, scroll to the "Make this README yours" section, and paste your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Tap Ask Alpie in the bottom-right corner for ideas.',
     cmd: 'profile/README.md  →  ## 🎨 Make this README yours',
     webSteps: [
       'Click the pencil (Edit) icon on profile/README.md.',
@@ -29,7 +29,7 @@ const STEPS = [
       'Paste your entry as a new block under it.',
       'Scroll down and click Commit changes.',
     ],
-    mock: 'commit', drafter: true, studio: true },
+    mock: 'commit' },
   { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
     guide: 'A <term:pull request>pull request</term:pull request> asks 169pi to add your change to their repo. From your fork, click Contribute then Open pull request, and name it exactly like this:',
     cmd: '@your-github-handle: <what you’re calling it>',
@@ -233,36 +233,6 @@ function GhMock({ kind }) {
   return null;
 }
 
-// No-code SVG generator: turns a name + message into a self-contained SVG the
-// user can paste straight into their README. Runs entirely in the browser.
-const STUDIO_THEMES = {
-  teal: { bg: '#0f2b30', panel: '#132B33', accent: '#2fd6b6', text: '#eafaf5', sub: '#8fc7bd' },
-  amber: { bg: '#2a1e08', panel: '#3a2a0a', accent: '#E8A317', text: '#fff7e6', sub: '#e8cf9a' },
-  violet: { bg: '#1e1633', panel: '#271b45', accent: '#a78bfa', text: '#f2ecff', sub: '#c9b8f5' },
-  paper: { bg: '#f4f1ea', panel: '#fbfaf7', accent: '#1B7A6E', text: '#171717', sub: '#5c5850' },
-};
-function esc(s) {
-  return String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
-}
-function buildStudioSvg({ handle, message, theme }) {
-  const t = STUDIO_THEMES[theme] || STUDIO_THEMES.teal;
-  const name = esc((handle || 'your-handle').trim() || 'your-handle');
-  const msg = esc((message || 'Reasoning, in 4 bits.').trim() || 'Reasoning, in 4 bits.');
-  const lines = msg.length > 42 ? [msg.slice(0, 42), msg.slice(42, 84)] : [msg];
-  const bodyLines = lines
-    .map((ln, i) => `<text x="40" y="${132 + i * 30}" font-family="Georgia, serif" font-size="26" fill="${t.text}">${ln}</text>`)
-    .join('\n  ');
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" width="640" height="220" role="img" aria-label="${name} — Alpie-Core">
-  <rect width="640" height="220" rx="18" fill="${t.bg}"/>
-  <rect x="16" y="16" width="608" height="188" rx="14" fill="${t.panel}"/>
-  <circle cx="52" cy="52" r="10" fill="${t.accent}"/>
-  <text x="72" y="57" font-family="ui-monospace, monospace" font-size="14" fill="${t.sub}">Alpie-Core · 32B · 4-bit · built in India</text>
-  ${bodyLines}
-  <rect x="40" y="168" width="${Math.min(560, 20 + name.length * 9)}" height="24" rx="12" fill="${t.accent}" opacity="0.16"/>
-  <text x="52" y="185" font-family="ui-monospace, monospace" font-size="13" fill="${t.accent}">@${name}</text>
-</svg>`;
-}
-
 const THEME_KEY = 'preptember.theme';
 function applyTheme(pref) {
   try {
@@ -369,17 +339,7 @@ export default function Home() {
   const [chatBusy, setChatBusy] = useState(false);
   const chatRef = useRef(null);
 
-  const [drafterOpen, setDrafterOpen] = useState(false);
-  const [drafterForm, setDrafterForm] = useState({ name: '', medium: 'svg', vibe: '' });
-  const [draft, setDraft] = useState('');
-  const [drafterBusy, setDrafterBusy] = useState(false);
-  const [copied, setCopied] = useState(false);
-
   const [glossaryOpen, setGlossaryOpen] = useState(false);
-  const [studioOpen, setStudioOpen] = useState(false);
-  const [studioForm, setStudioForm] = useState({ handle: '', message: '', theme: 'teal' });
-  const [studioCopied, setStudioCopied] = useState(false);
-  const studioSvg = useMemo(() => buildStudioSvg(studioForm), [studioForm]);
 
   const cd = useCountdown(NEXT_MERGE_DATE);
   const hereNow = usePresence();
@@ -505,32 +465,6 @@ export default function Home() {
   function askAlpie(prompt) {
     setChatOpen(true);
     sendChat(prompt);
-  }
-
-  async function runDrafter() {
-    if (drafterBusy) return;
-    const { name, medium, vibe } = drafterForm;
-    if (!name.trim()) return;
-    setDrafterBusy(true);
-    setDraft('');
-    const userPrompt = `My name/handle: ${name.trim()}
-Medium: ${medium}
-A hint about what I want it to say / the vibe: ${vibe.trim() || '(surprise me)'}
-Please write my "Make this README yours" entry now.`;
-    try {
-      const res = await fetch('/api/alpie', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'draft', messages: [{ role: 'user', content: userPrompt }] }),
-      });
-      const j = await res.json();
-      if (!res.ok) setDraft(`# Alpie could not draft this\n\n${j.error || ''}\n${j.detail || ''}`);
-      else setDraft(j.content || '(no draft returned)');
-    } catch {
-      setDraft('# Could not reach Alpie');
-    } finally {
-      setDrafterBusy(false);
-    }
   }
 
   async function logout() {
@@ -974,20 +908,6 @@ Please write my "Make this README yours" entry now.`;
                               </ul>
                             </div>
                           )}
-                          {(s.drafter || s.studio) && (
-                            <div className="guide-actions">
-                              {s.studio && (
-                                <button className="btn-solid" onClick={() => setStudioOpen(true)} style={{ padding: '8px 14px' }}>
-                                  Open Creation Studio →
-                                </button>
-                              )}
-                              {s.drafter && (
-                                <button className="btn-ghost" onClick={() => setDrafterOpen(true)} style={{ padding: '8px 14px' }}>
-                                  Draft it with Alpie →
-                                </button>
-                              )}
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -1163,148 +1083,6 @@ Please write my "Make this README yours" entry now.`;
           </button>
         )}
       </div>
-
-      {/* Drafter modal */}
-      {drafterOpen && (
-        <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setDrafterOpen(false); }}>
-          <div className="modal">
-            <h3>Draft your README entry</h3>
-            <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into profile/README.md under the &ldquo;Make this README yours&rdquo; heading, commit.</p>
-            <div className="field">
-              <label>Your name or GitHub handle</label>
-              <input
-                value={drafterForm.name}
-                onChange={(e) => setDrafterForm((f) => ({ ...f, name: e.target.value }))}
-                placeholder={user ? user.login : 'e.g. maya-builds'}
-              />
-            </div>
-            <div className="field">
-              <label>Medium</label>
-              <select
-                value={drafterForm.medium}
-                onChange={(e) => setDrafterForm((f) => ({ ...f, medium: e.target.value }))}
-              >
-                <option value="svg">Custom SVG art / hero image</option>
-                <option value="diagram">Explanatory diagram (Mermaid / SVG)</option>
-                <option value="benchmark">Benchmark visualization (GSM8K / MMLU / SWE-Bench)</option>
-                <option value="demo">Runnable micro-demo</option>
-                <option value="ascii">Structured ASCII depicting something</option>
-                <option value="writing">Writing with a visual layout</option>
-              </select>
-            </div>
-            <div className="field">
-              <label>Vibe / hint (optional)</label>
-              <textarea
-                value={drafterForm.vibe}
-                onChange={(e) => setDrafterForm((f) => ({ ...f, vibe: e.target.value }))}
-                placeholder="e.g. focus on 4-bit reasoning, keep it warm, mention India"
-              />
-            </div>
-            {draft && (
-              <div className="draft-block">{draft}</div>
-            )}
-            <div className="modal-actions">
-              {draft && (
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  onClick={async () => {
-                    try { await navigator.clipboard.writeText(draft); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch {}
-                  }}
-                >
-                  {copied ? 'Copied!' : 'Copy Markdown'}
-                </button>
-              )}
-              <div className="spacer" />
-              <button type="button" className="btn-ghost" onClick={() => setDrafterOpen(false)}>Close</button>
-              <button
-                type="button"
-                className="btn-solid"
-                onClick={runDrafter}
-                disabled={drafterBusy || !drafterForm.name.trim()}
-              >
-                {drafterBusy ? 'Drafting…' : draft ? 'Regenerate' : 'Draft it'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Creation Studio — no-code SVG generator, runs entirely in the browser */}
-      {studioOpen && (
-        <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setStudioOpen(false); }}>
-          <div className="modal">
-            <h3>Creation Studio</h3>
-            <p className="lede">No drawing app, no code. Type a message, pick a look, and get a ready-to-paste <Term k="svg">SVG</Term> — copy the code straight into profile/README.md, or download it. Everything happens in your browser.</p>
-            <div className="field">
-              <label>Your GitHub handle</label>
-              <input
-                value={studioForm.handle}
-                onChange={(e) => setStudioForm((f) => ({ ...f, handle: e.target.value }))}
-                placeholder={user ? user.login : 'e.g. maya-builds'}
-              />
-            </div>
-            <div className="field">
-              <label>Your message (one line works best)</label>
-              <input
-                value={studioForm.message}
-                onChange={(e) => setStudioForm((f) => ({ ...f, message: e.target.value }))}
-                placeholder="e.g. Reasoning, in 4 bits."
-                maxLength={84}
-              />
-            </div>
-            <div className="field">
-              <label>Look</label>
-              <div className="studio-themes">
-                {Object.keys(STUDIO_THEMES).map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    className={`studio-swatch ${studioForm.theme === key ? 'active' : ''}`}
-                    onClick={() => setStudioForm((f) => ({ ...f, theme: key }))}
-                    aria-label={`${key} theme`}
-                    aria-pressed={studioForm.theme === key}
-                    style={{ background: STUDIO_THEMES[key].bg, color: STUDIO_THEMES[key].accent }}
-                  >
-                    {key}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="studio-preview" dangerouslySetInnerHTML={{ __html: studioSvg }} />
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={async () => {
-                  try { await navigator.clipboard.writeText(studioSvg); setStudioCopied(true); setTimeout(() => setStudioCopied(false), 1500); } catch {}
-                }}
-              >
-                {studioCopied ? 'Copied!' : 'Copy SVG code'}
-              </button>
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={() => {
-                  try {
-                    const blob = new Blob([studioSvg], { type: 'image/svg+xml' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${(studioForm.handle || 'preptember').trim() || 'preptember'}-alpie.svg`;
-                    a.click();
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  } catch {}
-                }}
-              >
-                Download .svg
-              </button>
-              <div className="spacer" />
-              <button type="button" className="btn-solid" onClick={() => setStudioOpen(false)}>Done</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <footer className="site-footer">
