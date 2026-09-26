@@ -1171,10 +1171,11 @@ h1.hero-h .accent {
 .org-inline-note .material-symbols-outlined { font-size: 18px; color: var(--amber); flex-shrink: 0; }
 .org-inline-note a { color: var(--teal-bright); font-weight: 600; }
 
-/* Community Canvas */
-.canvas-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
-.canvas-controls { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.canvas-field { display: flex; flex-direction: column; gap: 7px; }
+/* Community Canvas — fields on top, both preview images below */
+.canvas-wrap { display: flex; flex-direction: column; gap: 24px; }
+.canvas-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; min-width: 0; }
+.canvas-field-full { grid-column: 1 / -1; }
+.canvas-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .canvas-label { font-size: 13px; font-weight: 700; color: var(--text-soft); }
 .canvas-opt { font-weight: 400; color: var(--faint-2); }
 .canvas-input {
@@ -1205,9 +1206,10 @@ h1.hero-h .accent {
 .logo-clear { background: transparent; border: none; color: var(--faint); font-size: 13px; padding: 0 2px; }
 .logo-clear:hover { color: #c0392b; }
 
-/* Both post sizes stack in the stage, each with its own label + downloads. */
-.canvas-stage { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
-.canvas-shot { display: flex; flex-direction: column; gap: 10px; }
+/* Both post sizes sit side by side below the fields, each with its own label +
+   downloads; the landscape card centers vertically next to the taller story. */
+.canvas-stage { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.canvas-shot { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .canvas-shot-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .canvas-shot-label { font-size: 13px; font-weight: 700; color: var(--text-soft); }
 .canvas-shot-dim { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted-2); }
@@ -1216,9 +1218,13 @@ h1.hero-h .accent {
   border: 1px solid var(--border); border-radius: 14px; padding: 14px; overflow: hidden;
 }
 .canvas-preview svg { width: 100%; height: auto; display: block; border-radius: 8px; }
-/* The 9:16 story is tall — cap it so the two previews sit comfortably together. */
-.canvas-preview-story { max-width: 300px; margin-left: auto; margin-right: auto; }
+/* The 9:16 story is tall — cap it so it doesn't tower over the landscape card. */
+.canvas-preview-story { max-width: 340px; margin-left: auto; margin-right: auto; }
 .canvas-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 760px) {
+  .canvas-controls { grid-template-columns: 1fr; }
+  .canvas-stage { grid-template-columns: 1fr; align-items: stretch; }
+}
 .canvas-actions .btn-solid, .canvas-actions .btn-ghost { display: inline-flex; align-items: center; gap: 7px; }
 .canvas-actions .material-symbols-outlined { font-size: 17px; }
 

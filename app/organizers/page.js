@@ -349,9 +349,6 @@ export default function Organizers() {
             <a href="#curriculum" className="hbtn hbtn-primary">
               See the agenda<span className="material-symbols-outlined">arrow_downward</span>
             </a>
-            <a href="/" className="hbtn hbtn-ghost">
-              <span className="material-symbols-outlined i-teal">checklist</span>Open the attendee checklist
-            </a>
             <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="hbtn hbtn-discord">
               <span className="material-symbols-outlined">group</span>Coordinate in Discord
             </a>
@@ -431,7 +428,7 @@ export default function Organizers() {
                     value={handle} onChange={(e) => setHandle(e.target.value)} maxLength={39} />
                 </div>
 
-                <div className="canvas-field">
+                <div className="canvas-field canvas-field-full">
                   <label className="canvas-label">Campus / club logo <span className="canvas-opt">(optional)</span></label>
                   <div className="logo-drop">
                     <input ref={fileRef} id="cc-logo" type="file" accept="image/*" onChange={onLogo} className="logo-input" />
@@ -450,7 +447,7 @@ export default function Organizers() {
                   <span className="canvas-help">SVG or PNG under 400 KB. It sits top-right on both sizes, co-branded with Alpie-Core.</span>
                 </div>
 
-                <div className="prompt-box">
+                <div className="prompt-box canvas-field-full">
                   <div className="prompt-box-head">
                     <span className="prompt-box-title"><span className="material-symbols-outlined">chat</span>Caption</span>
                     <div className="prompt-box-actions">
