@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePresence } from '../lib/usePresence';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
@@ -21,7 +21,7 @@ const STEPS = [
     guide: `A <term:fork>fork</term:fork> is your personal copy of the <term:repository>repo</term:repository>. You are forking ${PROFILE_OWNER}/${PROFILE_REPO} — the 169pi org profile — because that is where your entry gets published. On the repo page, click the Fork button (top-right), then Create fork. You will make your change in your copy, then offer it back — all in your browser.`,
     mock: 'fork' },
   { id: 'add', tag: '04', title: 'Add your entry to the profile README', desc: 'your creative bit', help: true,
-    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — click the pencil (Edit) icon, scroll to the "Make this README yours" section, and paste your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Open the Creation Studio for a 1-click SVG, use the drafter, or tap Ask Alpie in the bottom-right corner.',
+    guide: 'In your fork, open profile/README.md — the one inside the profile/ folder, not the repo\'s top-level README.md — click the pencil (Edit) icon, scroll to the "Make this README yours" section, and paste your entry as its own block. Keep the surrounding structure intact. Not sure what to make? Tap Ask Alpie in the bottom-right corner for ideas.',
     cmd: 'profile/README.md  →  ## 🎨 Make this README yours',
     webSteps: [
       'Click the pencil (Edit) icon on profile/README.md.',
@@ -29,7 +29,7 @@ const STEPS = [
       'Paste your entry as a new block under it.',
       'Scroll down and click Commit changes.',
     ],
-    mock: 'commit', drafter: true, studio: true },
+    mock: 'commit' },
   { id: 'pr', tag: '05', title: 'Open your pull request', desc: 'offer your change back', help: true, ctaText: 'Open a PR ↗', ctaHref: `https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`,
     guide: 'A <term:pull request>pull request</term:pull request> asks 169pi to add your change to their repo. From your fork, click Contribute then Open pull request, and name it exactly like this:',
     cmd: '@your-github-handle: <what you’re calling it>',
@@ -233,36 +233,6 @@ function GhMock({ kind }) {
   return null;
 }
 
-// No-code SVG generator: turns a name + message into a self-contained SVG the
-// user can paste straight into their README. Runs entirely in the browser.
-const STUDIO_THEMES = {
-  teal: { bg: '#0f2b30', panel: '#132B33', accent: '#2fd6b6', text: '#eafaf5', sub: '#8fc7bd' },
-  amber: { bg: '#2a1e08', panel: '#3a2a0a', accent: '#E8A317', text: '#fff7e6', sub: '#e8cf9a' },
-  violet: { bg: '#1e1633', panel: '#271b45', accent: '#a78bfa', text: '#f2ecff', sub: '#c9b8f5' },
-  paper: { bg: '#f4f1ea', panel: '#fbfaf7', accent: '#1B7A6E', text: '#171717', sub: '#5c5850' },
-};
-function esc(s) {
-  return String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
-}
-function buildStudioSvg({ handle, message, theme }) {
-  const t = STUDIO_THEMES[theme] || STUDIO_THEMES.teal;
-  const name = esc((handle || 'your-handle').trim() || 'your-handle');
-  const msg = esc((message || 'Reasoning, in 4 bits.').trim() || 'Reasoning, in 4 bits.');
-  const lines = msg.length > 42 ? [msg.slice(0, 42), msg.slice(42, 84)] : [msg];
-  const bodyLines = lines
-    .map((ln, i) => `<text x="40" y="${132 + i * 30}" font-family="Georgia, serif" font-size="26" fill="${t.text}">${ln}</text>`)
-    .join('\n  ');
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" width="640" height="220" role="img" aria-label="${name} — Alpie-Core">
-  <rect width="640" height="220" rx="18" fill="${t.bg}"/>
-  <rect x="16" y="16" width="608" height="188" rx="14" fill="${t.panel}"/>
-  <circle cx="52" cy="52" r="10" fill="${t.accent}"/>
-  <text x="72" y="57" font-family="ui-monospace, monospace" font-size="14" fill="${t.sub}">Alpie-Core · 32B · 4-bit · built in India</text>
-  ${bodyLines}
-  <rect x="40" y="168" width="${Math.min(560, 20 + name.length * 9)}" height="24" rx="12" fill="${t.accent}" opacity="0.16"/>
-  <text x="52" y="185" font-family="ui-monospace, monospace" font-size="13" fill="${t.accent}">@${name}</text>
-</svg>`;
-}
-
 const THEME_KEY = 'preptember.theme';
 function applyTheme(pref) {
   try {
@@ -341,6 +311,13 @@ function ThemeToggle() {
   );
 }
 
+// GitHub brand mark, used in the sign-in pill.
+const GithubMark = (props) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
+  </svg>
+);
+
 export default function Home() {
   const [done, setDone] = useState({});
   const [openId, setOpenId] = useState(null);
@@ -362,17 +339,7 @@ export default function Home() {
   const [chatBusy, setChatBusy] = useState(false);
   const chatRef = useRef(null);
 
-  const [drafterOpen, setDrafterOpen] = useState(false);
-  const [drafterForm, setDrafterForm] = useState({ name: '', medium: 'svg', vibe: '' });
-  const [draft, setDraft] = useState('');
-  const [drafterBusy, setDrafterBusy] = useState(false);
-  const [copied, setCopied] = useState(false);
-
   const [glossaryOpen, setGlossaryOpen] = useState(false);
-  const [studioOpen, setStudioOpen] = useState(false);
-  const [studioForm, setStudioForm] = useState({ handle: '', message: '', theme: 'teal' });
-  const [studioCopied, setStudioCopied] = useState(false);
-  const studioSvg = useMemo(() => buildStudioSvg(studioForm), [studioForm]);
 
   const cd = useCountdown(NEXT_MERGE_DATE);
   const hereNow = usePresence();
@@ -500,32 +467,6 @@ export default function Home() {
     sendChat(prompt);
   }
 
-  async function runDrafter() {
-    if (drafterBusy) return;
-    const { name, medium, vibe } = drafterForm;
-    if (!name.trim()) return;
-    setDrafterBusy(true);
-    setDraft('');
-    const userPrompt = `My name/handle: ${name.trim()}
-Medium: ${medium}
-A hint about what I want it to say / the vibe: ${vibe.trim() || '(surprise me)'}
-Please write my "Make this README yours" entry now.`;
-    try {
-      const res = await fetch('/api/alpie', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode: 'draft', messages: [{ role: 'user', content: userPrompt }] }),
-      });
-      const j = await res.json();
-      if (!res.ok) setDraft(`# Alpie could not draft this\n\n${j.error || ''}\n${j.detail || ''}`);
-      else setDraft(j.content || '(no draft returned)');
-    } catch {
-      setDraft('# Could not reach Alpie');
-    } finally {
-      setDrafterBusy(false);
-    }
-  }
-
   async function logout() {
     try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
     setUser(null);
@@ -545,176 +486,220 @@ Please write my "Make this README yours" entry now.`;
   ];
 
   return (
-    <main className="page">
-      {/* Nav */}
-      <div className="nav">
-        <div className="nav-logo">
-          <img src="/alpie-logo.webp" alt="169Pi logo" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-        </div>
-        <div className="nav-brand">
-          <div className="nav-title">169Pi</div>
-          <div className="nav-sub">Preptember · road to Hacktoberfest</div>
-        </div>
-        <div style={{ flexGrow: 1 }} />
-        <ThemeToggle />
-        {hereNow !== null && (
-          <span className="presence presence-nav" aria-live="polite" title={`${hereNow} ${hereNow === 1 ? 'person' : 'people'} here right now`}>
-            <span className="presence-dot" />
-            <span className="presence-num">{hereNow}</span>
-            <span className="presence-label">{hereNow === 1 ? ' here now' : ' here now'}</span>
-          </span>
-        )}
-        {user ? (
-          <span className="auth-pill">
-            {user.avatar ? <img src={user.avatar} alt={user.login} /> : null}
-            <span>@{user.login}</span>
-            <button className="logout" onClick={logout}>sign out</button>
-          </span>
-        ) : (
-          <a href="/api/auth/github" className="auth-pill auth-pill-signin">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
-            </svg>
-            <span>Sign in<span className="hide-sm"> with GitHub</span></span>
+    <div className="page">
+      {/* Sticky nav */}
+      <header className="site-nav">
+        <div className="nav-inner">
+          <a href="#overview" className="nav-brand-link" aria-label="169Pi Preptember home">
+            <span className="nav-logo">
+              <img src="/alpie-logo.webp" alt="169Pi logo" style={{ width: 30, height: 30, objectFit: 'contain' }} />
+            </span>
+            <span className="nav-title">169Pi</span>
+            <span className="nav-tag">Preptember · Road to Hacktoberfest</span>
           </a>
-        )}
-        <a
-          href={`https://github.com/${OWNER}/${REPO}`}
-          target="_blank"
-          rel="noreferrer"
-          className="nav-btn nav-btn-github"
-          aria-label={`${REPO} repo on GitHub`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
-          </svg>
-          <span>{REPO} repo</span>
-        </a>
-        <a
-          href={DISCORD_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="nav-btn nav-btn-discord"
-          aria-label="Join the 169pi Discord"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M20.32 4.57A19.79 19.79 0 0 0 16.56 3.4a.07.07 0 0 0-.07.03c-.16.29-.34.66-.47.96a18.28 18.28 0 0 0-5.48 0c-.13-.31-.32-.68-.48-.96a.08.08 0 0 0-.08-.03c-1.3.22-2.55.6-3.75 1.17a.07.07 0 0 0-.03.03C1.99 9.06 1.1 13.4 1.54 17.7a.08.08 0 0 0 .03.06c1.55 1.14 3.05 1.83 4.53 2.29a.08.08 0 0 0 .09-.03c.35-.48.66-.98.93-1.51a.08.08 0 0 0-.04-.11 12.6 12.6 0 0 1-1.8-.86.08.08 0 0 1-.01-.13c.12-.09.24-.19.36-.28a.08.08 0 0 1 .08-.01c3.78 1.73 7.86 1.73 11.6 0a.08.08 0 0 1 .08.01c.12.1.24.19.36.29a.08.08 0 0 1-.01.13c-.57.34-1.17.62-1.8.86a.08.08 0 0 0-.04.11c.28.53.59 1.03.93 1.51a.08.08 0 0 0 .09.03c1.49-.46 2.99-1.15 4.54-2.29a.08.08 0 0 0 .03-.06c.52-5.02-.87-9.32-3.68-13.16a.06.06 0 0 0-.03-.03zM8.52 15.09c-.9 0-1.63-.83-1.63-1.84s.72-1.84 1.63-1.84c.92 0 1.65.83 1.63 1.84 0 1.01-.72 1.84-1.63 1.84zm6.03 0c-.9 0-1.63-.83-1.63-1.84s.72-1.84 1.63-1.84c.92 0 1.65.83 1.63 1.84 0 1.01-.71 1.84-1.63 1.84z" />
-          </svg>
-          <span>Discord</span>
-        </a>
-      </div>
 
-      {/* Context bar */}
-      <div className="ctxbar">
-        <span className="ctxbar-tag">FIRST TIME? PERFECT.</span>
-        <span className="ctxbar-text">
-          It&apos;s <strong>Preptember</strong> — the warm-up to Hacktoberfest. This is a beginner-friendly way to make your <strong>first open-source contribution</strong> with 169Pi. No experience needed — every step below has a short guide, and you can ask Alpie if you get stuck.
-        </span>
-      </div>
-
-      {/* Hero */}
-      <div className="hero">
-        <div className="hero-left">
-          <div className="pill-pixel">
-            <span className="sq" />PREPTEMBER 2026 · WARM-UP TO HACKTOBERFEST
+          <div className="nav-actions" style={{ marginLeft: 'auto' }}>
+            <ThemeToggle />
+            {hereNow !== null && (
+              <span className="presence" aria-live="polite" title={`${hereNow} ${hereNow === 1 ? 'person' : 'people'} here right now`}>
+                <span className="presence-dot" />
+                <span className="presence-num">{hereNow}</span>
+                <span className="presence-label" style={{ marginLeft: 2 }}>here now</span>
+              </span>
+            )}
+            {user ? (
+              <span className="auth-pill">
+                {user.avatar ? <img src={user.avatar} alt={user.login} /> : null}
+                <span>@{user.login}</span>
+                <button className="logout" onClick={logout}>sign out</button>
+              </span>
+            ) : (
+              <a href="/api/auth/github" className="auth-pill auth-pill-signin">
+                <GithubMark />
+                <span>Sign in<span className="hide-sm"> with GitHub</span></span>
+              </a>
+            )}
           </div>
-          <h1 className="hero-h">
-            Get ready for Hacktoberfest<br />with <span className="accent">169Pi.</span>
-          </h1>
-          <p>
-            Make your first open-source contribution before October — the easy way. <strong>Alpie-Core</strong> is 169pi&apos;s open-source AI reasoning model (32B params, 4-bit, built in India). Plant a flag on the <strong>169pi org profile</strong> — custom SVG art, an explanatory diagram, a benchmark visualization, a runnable micro-demo — anything that showcases <em>you</em> reflecting something real about the model. Open a PR against <code>169Pi/.github</code> and we&apos;ll walk you through each step.
-          </p>
-          <div className="chips">
-            <span className="chip">No experience needed</span>
-            <span className="chip">~20 minutes</span>
-            <span className="chip">Real 169pi swag when merged</span>
+        </div>
+      </header>
+
+      <main className="wrap" id="overview">
+        {/* Announcement strip */}
+        <div className="ctxbar">
+          <div className="ctxbar-main">
+            <span className="ctxbar-tag"><span className="dot" />FIRST TIME? PERFECT</span>
+            <span className="ctxbar-text">
+              It&apos;s <strong>Preptember</strong> — the warm-up to Hacktoberfest. Beginner-friendly first open-source contribution with 169Pi. No experience needed — every step has a short guide, and you can ask Alpie if you get stuck.
+            </span>
+          </div>
+          <span className="ctxbar-note">
+            <span className="material-symbols-outlined">verified</span>
+            Every step has a short guide
+          </span>
+        </div>
+
+        {/* Hero */}
+        <section className="hero section">
+          <div className="hero-left">
+            <div className="pill-pixel">
+              <span className="sq" />PREPTEMBER 2026 · WARM-UP TO HACKTOBERFEST
+            </div>
+            <h1 className="hero-h">
+              Get ready for Hacktoberfest<br />with <span className="accent">169Pi.</span>
+            </h1>
+            <p>
+              Make your first open-source contribution before October — the easy way. <strong>Alpie-Core</strong> is 169pi&apos;s open-source AI reasoning model (32B params, 4-bit, built in India). Plant a flag on the <strong>169pi org profile</strong> — custom SVG art, an explanatory diagram, a benchmark visualization, or a runnable micro-demo — anything that showcases <em>you</em> reflecting something real about the model. Open a PR against <code>169Pi/.github</code> and we&apos;ll walk you through each step.
+            </p>
+            <div className="chips">
+              <span className="chip"><span className="material-symbols-outlined i-emerald">check_circle</span>No experience needed</span>
+              <span className="chip"><span className="material-symbols-outlined i-teal">schedule</span>~20 min flow</span>
+              <span className="chip"><span className="material-symbols-outlined i-cyan">inventory_2</span>Real swag shipped</span>
+              <span className="chip"><span className="material-symbols-outlined i-amber">bolt</span>100% in-browser</span>
+            </div>
+            <div className="hero-cta">
+              <a href="#workflow" className="hbtn hbtn-primary">
+                Start Your First PR<span className="material-symbols-outlined">arrow_forward</span>
+              </a>
+              <a href="#benchmarks" className="hbtn hbtn-ghost">
+                <span className="material-symbols-outlined i-teal">analytics</span>Explore Alpie-Core
+              </a>
+              <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="hbtn hbtn-discord">
+                <span className="material-symbols-outlined">group</span>Join Discord
+              </a>
+            </div>
+          </div>
+
+          {/* Right rail: live stats + countdown */}
+          <div className="hero-rail">
+            <div className="stats">
+              <div className="stats-header">
+                <div className="stats-header-l">
+                  <span className="live-dot" />
+                  <span className="small-label">LIVE FROM {statsRepo.owner.toUpperCase()}/{statsRepo.repo.toUpperCase()}</span>
+                </div>
+                <span className="material-symbols-outlined">terminal</span>
+              </div>
+              <div className="stats-grid">
+                <div className="stat-tile">
+                  <span className="stat-num gold"><span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>{stars ?? '—'}</span>
+                  <span className="stat-cap">Stars</span>
+                </div>
+                <div className="stat-tile">
+                  <span className="stat-num cyan">{prsCount ?? '—'}</span>
+                  <span className="stat-cap">PRs</span>
+                </div>
+                <div className="stat-tile">
+                  <span className="stat-num emerald">{contributorsCount ?? '—'}</span>
+                  <span className="stat-cap">Contributors</span>
+                </div>
+              </div>
+              <p className="stats-note">
+                Every star, PR and name here is someone who took part. <strong>Add yours</strong> and watch it climb.
+              </p>
+              <div className="stats-cta">
+                <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer" className="btn btn-teal">
+                  <span className="material-symbols-outlined">grade</span>Star Repo
+                </a>
+                <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn btn-dark">
+                  <span className="material-symbols-outlined">forum</span>Discord
+                </a>
+              </div>
+            </div>
+
+            <div className="countdown-card">
+              <div className="countdown-top">
+                <span className="countdown-label">
+                  <span className="material-symbols-outlined">timer</span>Next Merge Batch
+                </span>
+                <span className="countdown-badge">ACTIVE CYCLE</span>
+              </div>
+              <div className="countdown-clockwrap">
+                <div className="countdown-unit">
+                  <span className="countdown-days">{cd.days === '—' ? '—' : pad(cd.days)}</span>
+                  <span className="countdown-unit-cap">DAYS</span>
+                </div>
+                <span className="countdown-colon">:</span>
+                <div className="countdown-unit">
+                  <span className="countdown-clock">{cd.clock}</span>
+                  <span className="countdown-unit-cap">HRS : MIN : SEC</span>
+                </div>
+              </div>
+              <div className="countdown-merge">
+                <span>Next review ceremony:</span>
+                <strong>{NEXT_MERGE_DATE}</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Benchmarks + Try Alpie */}
+        <section className="card bench-section section" id="benchmarks">
+          <div className="bench-head">
+            <div>
+              <span className="eyebrow"><span className="material-symbols-outlined">memory</span>Alpie-Core, in numbers</span>
+              <h2>The technical bits, if you&apos;re curious</h2>
+            </div>
+            <div className="bench-head-meta">32B params · 4-bit quantized · Built in India for edge &amp; desktop</div>
           </div>
 
           <details className="benchmarks" aria-label="Alpie-Core benchmarks">
             <summary className="benchmarks-summary">
-              <span className="benchmarks-label">Alpie-Core, in numbers</span>
-              <span className="benchmarks-hint">the technical bits, if you&apos;re curious</span>
-              <span className="benchmarks-chevron" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+              <span className="benchmarks-summary-l">
+                <span className="emoji" aria-hidden="true">🤓</span>
+                <span className="benchmarks-label">[λ] Stats for Nerds</span>
+                <span className="benchmarks-hint">GSM8K, MMLU, SWE-Bench, VRAM</span>
+              </span>
+              <span className="benchmarks-summary-r">
+                <span className="benchmarks-optional">Optional deep-dive</span>
+                <span className="benchmarks-chevron" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                </span>
               </span>
             </summary>
             <div className="benchmarks-grid">
-              <div className="bench"><span className="bench-num">92.75%</span><span className="bench-cap">GSM8K</span></div>
-              <div className="bench"><span className="bench-num">81.28%</span><span className="bench-cap">MMLU</span></div>
-              <div className="bench"><span className="bench-num">57.8%</span><span className="bench-cap">SWE-Bench Verified</span></div>
-              <div className="bench"><span className="bench-num">65K</span><span className="bench-cap">context</span></div>
-              <div className="bench"><span className="bench-num">~16 GB</span><span className="bench-cap">VRAM</span></div>
+              <div className="bench"><span className="bench-top">GSM8K Reasoning</span><span className="bench-num c-teal">92.75%</span><span className="bench-cap">Math &amp; Logic Chain</span></div>
+              <div className="bench"><span className="bench-top">MMLU Multi-Task</span><span className="bench-num c-cyan">81.28%</span><span className="bench-cap">General Knowledge</span></div>
+              <div className="bench"><span className="bench-top">SWE-Bench</span><span className="bench-num c-emerald">57.8%</span><span className="bench-cap">Code &amp; Debug Verified</span></div>
+              <div className="bench"><span className="bench-top">Context Window</span><span className="bench-num c-primary">65K</span><span className="bench-cap">Tokens Attention</span></div>
+              <div className="bench"><span className="bench-top">VRAM Requirement</span><span className="bench-num c-slate">~16 GB</span><span className="bench-cap">Consumer RTX ready</span></div>
             </div>
           </details>
-        </div>
 
-        {/* Stats */}
-        <div className="stats">
-          <div className="stats-header">
-            <span className="live-dot" />
-            <span className="small-label">LIVE FROM {statsRepo.owner.toUpperCase()}/{statsRepo.repo.toUpperCase()}</span>
-          </div>
-          <div className="stars-panel">
-            <div className="stars-row">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="#E8A317" stroke="#E8A317" strokeWidth="1">
-                <path d="M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.6 3.2L6.7 14 1.7 9.4l7-.9z" />
-              </svg>
-              <span className="stars-num">{stars ?? '—'}</span>
+          {/* Try Alpie-Core */}
+          <div className="try-card" id="run-alpie">
+            <div className="try-head">
+              <div>
+                <span className="eyebrow" style={{ color: 'var(--teal-deep)' }}>Try Alpie-Core</span>
+                <h3 className="try-title">Run the model before you draw on it.</h3>
+                <p className="try-sub">Easiest way in — just open it in your browser, no setup. Developers can grab the weights below.</p>
+              </div>
+              <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer" className="try-docs">Read the docs ↗</a>
             </div>
-            <div className="stars-cap">stars on {starsRepoInfo.owner}/{starsRepoInfo.repo}</div>
-          </div>
-          <div className="stats-mini">
-            <div className="mini">
-              <div className="mini-num">{prsCount ?? '—'}</div>
-              <div className="mini-cap">pull requests</div>
-            </div>
-            <div className="mini">
-              <div className="mini-num">{contributorsCount ?? '—'}</div>
-              <div className="mini-cap">contributors</div>
-            </div>
-          </div>
-          <div className="stats-note">
-            Every star, PR and name here is someone who took part.{' '}
-            <strong>Add yours</strong> and watch it climb.
-          </div>
-          <div className="stats-cta">
-            <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer" className="btn btn-teal">★ Star the repo</a>
-            <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="btn btn-dark">Join Discord</a>
-          </div>
-        </div>
-      </div>
 
-      {/* Try Alpie-Core */}
-      <div className="try-wrap">
-        <div className="try-card">
-          <div className="try-left">
-            <div className="try-eyebrow">TRY ALPIE-CORE</div>
-            <h3 className="try-title">Run the model before you draw on it.</h3>
-            <p className="try-sub">Easiest way in — just open it in your browser, no setup. Developers can grab the weights below.</p>
-          </div>
-          <div className="try-main">
             <div className="try-primary">
               <a href="https://alpie.ai" target="_blank" rel="noreferrer" className="try-btn try-btn-primary try-btn-alpie">
-                <span className="try-btn-icon" aria-hidden="true">
-                  <img src="/alpie-logo.webp" alt="" style={{ width: 20, height: 20, objectFit: 'contain' }} />
+                <span className="try-btn-l">
+                  <span className="try-btn-icon" aria-hidden="true">
+                    <img src="/alpie-logo.webp" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+                  </span>
+                  <span className="try-btn-body">
+                    <span className="try-btn-name">Chat with Alpie</span>
+                    <span className="try-btn-sub">alpie.ai · no setup, just try it</span>
+                  </span>
                 </span>
-                <span className="try-btn-body">
-                  <span className="try-btn-name">Chat with Alpie</span>
-                  <span className="try-btn-sub">alpie.ai · no setup, just try it</span>
-                </span>
+                <span className="try-btn-arrow" aria-hidden="true"><span className="material-symbols-outlined">arrow_forward</span></span>
               </a>
               <a href="https://playground.169pi.ai/dashboard" target="_blank" rel="noreferrer" className="try-btn try-btn-primary try-btn-playground">
-                <span className="try-btn-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+                <span className="try-btn-l">
+                  <span className="try-btn-icon" aria-hidden="true">
+                    <span className="material-symbols-outlined i-cyanfix">play_circle</span>
+                  </span>
+                  <span className="try-btn-body">
+                    <span className="try-btn-name">Open the Playground</span>
+                    <span className="try-btn-sub">playground.169pi.ai</span>
+                  </span>
                 </span>
-                <span className="try-btn-body">
-                  <span className="try-btn-name">Open the Playground</span>
-                  <span className="try-btn-sub">playground.169pi.ai</span>
-                </span>
+                <span className="try-btn-arrow" aria-hidden="true"><span className="material-symbols-outlined">arrow_forward</span></span>
               </a>
             </div>
 
@@ -722,287 +707,299 @@ Please write my "Make this README yours" entry now.`;
               <summary className="try-more-summary">
                 <span>More ways to run it — for developers</span>
                 <span className="try-more-chevron" aria-hidden="true">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
                 </span>
               </summary>
               <div className="try-buttons">
-                <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer" className="try-btn try-btn-hf">
-                  <span className="try-btn-icon" aria-hidden="true">🤗</span>
-                  <span className="try-btn-body">
-                    <span className="try-btn-name">Hugging Face</span>
-                    <span className="try-btn-sub">169Pi/Alpie-Core</span>
+                <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer" className="try-dev">
+                  <span className="try-dev-l">
+                    <span className="try-dev-emoji" aria-hidden="true">🤗</span>
+                    <span className="try-dev-body">
+                      <span className="try-dev-name">Hugging Face</span>
+                      <span className="try-dev-sub">169Pi/Alpie-Core</span>
+                    </span>
                   </span>
+                  <span className="try-dev-ext"><span className="material-symbols-outlined">open_in_new</span></span>
                 </a>
-                <a href="https://ollama.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-ollama">
-                  <span className="try-btn-icon" aria-hidden="true">🦙</span>
-                  <span className="try-btn-body">
-                    <span className="try-btn-name">Ollama</span>
-                    <span className="try-btn-sub">ollama run 169pi</span>
+                <a href="https://ollama.com/169pi" target="_blank" rel="noreferrer" className="try-dev">
+                  <span className="try-dev-l">
+                    <span className="try-dev-emoji" aria-hidden="true">🦙</span>
+                    <span className="try-dev-body">
+                      <span className="try-dev-name">Ollama CLI</span>
+                      <span className="try-dev-sub">ollama run 169pi</span>
+                    </span>
                   </span>
+                  <span className="try-dev-ext"><span className="material-symbols-outlined">terminal</span></span>
                 </a>
-                <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer" className="try-btn try-btn-kaggle">
-                  <span className="try-btn-icon" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M18.83 21.06a.34.34 0 0 1-.34.34h-3.14a.5.5 0 0 1-.4-.2l-4.4-5.63-1.28 1.22v4.27a.34.34 0 0 1-.34.34H6.4a.34.34 0 0 1-.34-.34V2.94A.34.34 0 0 1 6.4 2.6h2.53c.19 0 .34.15.34.34v10.6l5-5.02a.5.5 0 0 1 .35-.15h3.24c.31 0 .43.35.22.55L13 13.68l5.75 7.11a.35.35 0 0 1 .08.27z"/>
-                    </svg>
+                <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer" className="try-dev">
+                  <span className="try-dev-l">
+                    <span className="try-dev-icon" aria-hidden="true"><span className="material-symbols-outlined">analytics</span></span>
+                    <span className="try-dev-body">
+                      <span className="try-dev-name">Kaggle Notebooks</span>
+                      <span className="try-dev-sub">notebooks &amp; data</span>
+                    </span>
                   </span>
-                  <span className="try-btn-body">
-                    <span className="try-btn-name">Kaggle</span>
-                    <span className="try-btn-sub">notebooks & data</span>
-                  </span>
+                  <span className="try-dev-ext"><span className="material-symbols-outlined">open_in_new</span></span>
                 </a>
               </div>
             </details>
-
-            <a href="https://playground.169pi.ai/dashboard/documents" target="_blank" rel="noreferrer" className="try-docs">
-              Read the docs ↗
-            </a>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Hosting a session — resources for community leaders */}
-      <div className="organize-wrap">
-        <div className="organize-card">
-          <div className="organize-left">
-            <div className="organize-eyebrow">RUNNING A SESSION?</div>
-            <h3 className="organize-title">Host Preptember for your community.</h3>
-            <p className="organize-sub">
-              Meetup, campus club or Discord — bring people through their first contribution together.
-              Get a ready-made organizer&apos;s guide (agenda, checklist, talking points) drafted by Alpie in seconds.
-            </p>
-          </div>
-          <div className="organize-actions">
-            <button
-              type="button"
-              className="btn-solid organize-btn"
-              onClick={() => askAlpie('Help me prepare an organizer’s guide for hosting a local Preptember contribution session — include a suggested agenda, a prep checklist, talking points for explaining forks and pull requests to newcomers, and tips for helping a group open their first PR to 169Pi/.github.')}
-            >
-              Help me prepare an organizer&apos;s guide →
-            </button>
-            <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="organize-link">
-              Coordinate with 169pi in Discord ↗
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="content">
-        {/* Steps */}
-        <div className="steps-card">
-          <div className="steps-head">
-            <div>
-              <h2>Your first contribution, step by step</h2>
-              <p>
-                Hit <strong>Help</strong> on any step for a short how-to. Check it off once you&apos;ve done it on GitHub
-                {user ? ' — starring, forking and opening your PR are auto-checked from GitHub.' : ' — sign in with GitHub and the star, fork and PR steps get auto-checked for you.'}
+        {/* Host a session */}
+        <section className="section" id="organizers">
+          <div className="organize-card">
+            <div className="organize-left">
+              <span className="organize-eyebrow">RUNNING A SESSION?</span>
+              <h3 className="organize-title">Host Preptember for your community.</h3>
+              <p className="organize-sub">
+                Meetup, campus club or Discord — bring people through their first contribution together.
+                Get a ready-made organizer&apos;s guide (agenda, checklist, talking points) drafted by Alpie in seconds.
               </p>
             </div>
-            <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <div className="progress-cap">{count}/{total} · {statusLabel}</div>
-              <div className="progress-track">
-                <div className="progress-fill" style={{ width: `${pct}%`, background: complete ? '#E8A317' : '#1B7A6E' }} />
-              </div>
+            <div className="organize-actions">
+              <button
+                type="button"
+                className="organize-btn"
+                onClick={() => askAlpie('Help me prepare an organizer’s guide for hosting a local Preptember contribution session — include a suggested agenda, a prep checklist, talking points for explaining forks and pull requests to newcomers, and tips for helping a group open their first PR to 169Pi/.github.')}
+              >
+                Help me prepare guide<span className="material-symbols-outlined">arrow_forward</span>
+              </button>
+              <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="organize-link">
+                Coordinate in Discord ↗
+              </a>
             </div>
           </div>
+        </section>
 
-          <div className="noterminal">
-            <span className="noterminal-icon" aria-hidden="true">🖱️</span>
-            <span className="noterminal-text">
-              <strong>No coding, no terminal, no installs.</strong> You do every step right here in your web browser —
-              click <Term k="fork">Fork</Term>, edit a file, and open a <Term k="pull request">pull request</Term> on GitHub&apos;s website. That&apos;s the whole workflow.
-            </span>
-          </div>
+        {/* Workflow: steps + leaderboard */}
+        <section className="workflow section" id="workflow">
+          {/* Steps */}
+          <div className="steps-col">
+            <div className="card steps-card">
+              <div className="steps-head">
+                <div>
+                  <h2>Your first contribution, step by step</h2>
+                  <p>
+                    Hit <strong>Help</strong> on any step for a short how-to. Check it off once you&apos;ve done it on GitHub
+                    {user ? ' — starring, forking and opening your PR are auto-checked from GitHub.' : ' — sign in with GitHub and the star, fork and PR steps get auto-checked for you.'}
+                  </p>
+                </div>
+                <div className="steps-progress">
+                  <span className="progress-cap">{count}/{total} completed</span>
+                  <span className="progress-sub">{statusLabel}</span>
+                </div>
+              </div>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: `${pct}%`, background: complete ? 'var(--amber)' : 'var(--emerald)' }} />
+              </div>
 
-          <div className="glossary">
-            <button type="button" className="glossary-toggle" onClick={() => setGlossaryOpen((v) => !v)} aria-expanded={glossaryOpen}>
-              <span className="glossary-toggle-label">📖 New words? Open the jargon-buster</span>
-              <span className={`glossary-chevron ${glossaryOpen ? 'open' : ''}`} aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </span>
-            </button>
-            {glossaryOpen && (
-              <dl className="glossary-list">
-                {GLOSSARY.map((g) => (
-                  <div key={g.term} className="glossary-item">
-                    <dt>{g.term}{g.short ? <span className="glossary-alias"> ({g.short})</span> : null}</dt>
-                    <dd>{g.def}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-          </div>
+              <div className="noterminal">
+                <span className="noterminal-icon" aria-hidden="true">🖱️</span>
+                <span className="noterminal-text">
+                  <strong>No coding, no terminal, no installs.</strong> You do every step right here in your web browser —
+                  click <Term k="fork">Fork</Term>, edit a file, and open a <Term k="pull request">pull request</Term> on GitHub&apos;s website. That&apos;s the whole workflow.
+                </span>
+              </div>
 
-          <div className="steps-list">
-            {STEPS.map((s) => {
-              const isDone = !!done[s.id];
-              const isOpen = !!s.help && openId === s.id;
-              const cardClass = ['step', isDone ? 'step-done' : '', isOpen ? 'step-open' : ''].filter(Boolean).join(' ');
-              return (
-                <div key={s.id} className={cardClass}>
-                  <div className="step-row">
-                    <button
-                      type="button"
-                      onClick={() => toggleDone(s.id)}
-                      aria-label={`Mark step ${s.tag} ${isDone ? 'not done' : 'done'}`}
-                      className={`checkbox ${isDone ? 'checkbox-done' : ''}`}
-                    >
-                      {isDone && (
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FBFAF7" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-                    <span className="step-tag">{s.tag}</span>
-                    {s.help ? (
-                      <button type="button" onClick={() => toggleOpen(s.id)} className="step-body-btn">
-                        <span style={{ flexGrow: 1 }}>
-                          <span className={`step-title ${isDone ? 'step-title-done' : ''}`}>{s.title}</span>
-                          <span className="step-desc">{s.desc}</span>
-                        </span>
-                        <span className={`help-btn ${isOpen ? 'open' : ''}`}>{isOpen ? 'Hide' : 'Help'}</span>
-                      </button>
-                    ) : (
-                      <span className="step-body-static">
-                        <span className={`step-title ${isDone ? 'step-title-done' : ''}`}>{s.title}</span>
-                        <span className="step-desc">{s.desc}</span>
-                      </span>
-                    )}
-                    {s.ctaText && (
-                      <a href={s.ctaHref} target="_blank" rel="noreferrer" className="cta-pill">{s.ctaText}</a>
-                    )}
-                  </div>
-                  {isOpen && (
-                    <div className="step-guide">
-                      <div>{renderGuide(s.guide)}</div>
-                      {s.cmd && <div className="cmd">{s.cmd}</div>}
-                      {s.mock && (
-                        <div className="step-mock">
-                          <GhMock kind={s.mock} />
-                          <span className="step-mock-cap">what you&apos;ll see on GitHub — the highlighted button is the one to click</span>
-                        </div>
-                      )}
-                      {s.webSteps && (
-                        <div className="webflow">
-                          <div className="webflow-label">Do it in your browser</div>
-                          <ol>
-                            {s.webSteps.map((w) => <li key={w}>{w}</li>)}
-                          </ol>
-                        </div>
-                      )}
-                      {s.rules && (
-                        <div className="rules">
-                          <div className="rules-label">Before you PR</div>
-                          <ul>
-                            {s.rules.map((r) => <li key={r}>{r}</li>)}
-                          </ul>
-                        </div>
-                      )}
-                      {(s.drafter || s.studio) && (
-                        <div className="guide-actions">
-                          {s.studio && (
-                            <button className="btn-solid" onClick={() => setStudioOpen(true)} style={{ padding: '8px 14px' }}>
-                              Open Creation Studio →
-                            </button>
+              <div className="glossary">
+                <button type="button" className="glossary-toggle" onClick={() => setGlossaryOpen((v) => !v)} aria-expanded={glossaryOpen}>
+                  <span className="glossary-toggle-label">📖 New words? Open the jargon-buster</span>
+                  <span className={`glossary-chevron ${glossaryOpen ? 'open' : ''}`} aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+                  </span>
+                </button>
+                {glossaryOpen && (
+                  <dl className="glossary-list">
+                    {GLOSSARY.map((g) => (
+                      <div key={g.term} className="glossary-item">
+                        <dt>{g.term}{g.short ? <span className="glossary-alias"> ({g.short})</span> : null}</dt>
+                        <dd>{g.def}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+              </div>
+
+              <div className="steps-list">
+                {STEPS.map((s) => {
+                  const isDone = !!done[s.id];
+                  const isOpen = !!s.help && openId === s.id;
+                  const cardClass = ['step', isDone ? 'step-done' : '', isOpen ? 'step-open' : ''].filter(Boolean).join(' ');
+                  return (
+                    <div key={s.id} className={cardClass}>
+                      <div className="step-row">
+                        <button
+                          type="button"
+                          onClick={() => toggleDone(s.id)}
+                          aria-label={`Mark step ${s.tag} ${isDone ? 'not done' : 'done'}`}
+                          className={`checkbox ${isDone ? 'checkbox-done' : ''}`}
+                        >
+                          {isDone && (
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
                           )}
-                          {s.drafter && (
-                            <button className="btn-ghost" onClick={() => setDrafterOpen(true)} style={{ padding: '8px 14px' }}>
-                              Draft it with Alpie →
-                            </button>
+                        </button>
+                        <span className="step-tag">{s.tag}</span>
+                        {s.help ? (
+                          <button type="button" onClick={() => toggleOpen(s.id)} className="step-body-btn">
+                            <span style={{ flexGrow: 1 }}>
+                              <span className={`step-title ${isDone ? 'step-title-done' : ''}`}>{s.title}</span>
+                              <span className="step-desc">{s.desc}</span>
+                            </span>
+                          </button>
+                        ) : (
+                          <span className="step-body-static">
+                            <span className={`step-title ${isDone ? 'step-title-done' : ''}`}>{s.title}</span>
+                            <span className="step-desc">{s.desc}</span>
+                          </span>
+                        )}
+                        {s.id === 'add' && (
+                          <span className="cta-pill-static stage"><span className="material-symbols-outlined">palette</span>Creative stage</span>
+                        )}
+                        {s.id === 'merged' && (
+                          <span className="cta-pill-static swag"><span className="material-symbols-outlined">celebration</span>Swag Unlocked</span>
+                        )}
+                        {s.ctaText && (
+                          <a
+                            href={s.ctaHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={`cta-pill ${s.id === 'star' || s.id === 'review' ? 'cta-pill-slate' : ''} ${s.id === 'discord' ? 'cta-pill-discord' : ''}`}
+                          >
+                            {s.ctaText}
+                          </a>
+                        )}
+                        {s.help && (
+                          <button
+                            type="button"
+                            onClick={() => toggleOpen(s.id)}
+                            className={`help-btn ${isOpen ? 'open' : ''}`}
+                            aria-label={`${isOpen ? 'Hide' : 'Show'} help for step ${s.tag}`}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{isOpen ? 'close' : 'help'}</span>
+                          </button>
+                        )}
+                      </div>
+                      {isOpen && (
+                        <div className="step-guide">
+                          <div>{renderGuide(s.guide)}</div>
+                          {s.cmd && <div className="cmd">{s.cmd}</div>}
+                          {s.mock && (
+                            <div className="step-mock">
+                              <GhMock kind={s.mock} />
+                              <span className="step-mock-cap">what you&apos;ll see on GitHub — the highlighted button is the one to click</span>
+                            </div>
+                          )}
+                          {s.webSteps && (
+                            <div className="webflow">
+                              <div className="webflow-label">Do it in your browser</div>
+                              <ol>
+                                {s.webSteps.map((w) => <li key={w}>{w}</li>)}
+                              </ol>
+                            </div>
+                          )}
+                          {s.rules && (
+                            <div className="rules">
+                              <div className="rules-label">Before you PR</div>
+                              <ul>
+                                {s.rules.map((r) => <li key={r}>{r}</li>)}
+                              </ul>
+                            </div>
                           )}
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Right column */}
-        <div className="right-col">
-          <div className="dark-card">
-            <div className="countdown-label">COUNTDOWN TO NEXT MERGE</div>
-            <div className="countdown-row">
-              <span className="countdown-days">{cd.days}</span>
-              <span className="countdown-days-label">days</span>
-            </div>
-            <div className="countdown-clock">{cd.clock}</div>
-            <div className="countdown-merge">
-              <span className="countdown-merge-dot" />
-              Merges <strong>{NEXT_MERGE_DATE}</strong>
-            </div>
-          </div>
-
-          <div className="leaderboard-card">
-            <div className="leaderboard-head">
-              <div>
-                <div className="leaderboard-title">Contributor leaderboard</div>
-                <div className="leaderboard-sub">
-                  {contributorsCount ?? '—'} people have opened PRs to {statsRepo.owner}/{statsRepo.repo}
-                </div>
+                  );
+                })}
               </div>
+            </div>
+          </div>
+
+          {/* Right rail: leaderboard + support */}
+          <div className="right-col">
+            <div className="card leaderboard-card">
+              <div className="leaderboard-head">
+                <div>
+                  <span className="eyebrow"><span className="material-symbols-outlined">military_tech</span>Hall of Fame</span>
+                  <div className="leaderboard-title">Contributor leaderboard</div>
+                  <div className="leaderboard-sub">
+                    {contributorsCount ?? '—'} people opened PRs to {statsRepo.owner}/{statsRepo.repo}
+                  </div>
+                </div>
+                <a
+                  href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/pulls?q=is%3Apr`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="leaderboard-all"
+                >
+                  See all →
+                </a>
+              </div>
+              <ol className="leaderboard-list">
+                {contributors === null && (
+                  <li className="leaderboard-empty">Loading contributors…</li>
+                )}
+                {contributors && contributors.length === 0 && (
+                  <li className="leaderboard-empty">
+                    No contributors yet — <strong>be the first</strong>.
+                  </li>
+                )}
+                {(contributors || []).slice(0, 10).map((c, i) => {
+                  const rank = i + 1;
+                  const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+                  return (
+                    <li key={c.login} className={`leaderboard-row ${rank <= 3 ? 'top3' : ''}`}>
+                      <a
+                        href={c.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="leaderboard-user"
+                      >
+                        <span className={`leaderboard-rank ${rankClass}`}>{rank}</span>
+                        {c.avatar ? (
+                          <img src={c.avatar} alt="" className="leaderboard-avatar" />
+                        ) : (
+                          <span
+                            className="leaderboard-avatar"
+                            style={{ background: initialsColor(c.login), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700 }}
+                          >
+                            {c.login.slice(0, 1).toUpperCase()}
+                          </span>
+                        )}
+                        <span className="leaderboard-login">@{c.login}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
               <a
-                href={`https://github.com/${statsRepo.owner}/${statsRepo.repo}/pulls?q=is%3Apr`}
+                href={`https://github.com/${PROFILE_OWNER}/${PROFILE_REPO}/compare`}
                 target="_blank"
                 rel="noreferrer"
-                className="leaderboard-all"
+                className="leaderboard-submit"
               >
-                See all →
+                <span className="material-symbols-outlined">add_circle</span>
+                Submit PR &amp; claim your spot
               </a>
             </div>
-            <ol className="leaderboard-list">
-              {contributors === null && (
-                <li className="leaderboard-empty">Loading contributors…</li>
-              )}
-              {contributors && contributors.length === 0 && (
-                <li className="leaderboard-empty">
-                  No contributors yet — <strong>be the first</strong>.
-                </li>
-              )}
-              {(contributors || []).slice(0, 10).map((c, i) => {
-                const rank = i + 1;
-                const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
-                return (
-                  <li key={c.login} className="leaderboard-row">
-                    <span className={`leaderboard-rank ${rankClass}`}>{rank}</span>
-                    <a
-                      href={c.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="leaderboard-user"
-                    >
-                      {c.avatar ? (
-                        <img src={c.avatar} alt="" className="leaderboard-avatar" />
-                      ) : (
-                        <span
-                          className="leaderboard-avatar"
-                          style={{ background: initialsColor(c.login), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700 }}
-                        >
-                          {c.login.slice(0, 1).toUpperCase()}
-                        </span>
-                      )}
-                      <span className="leaderboard-login">@{c.login}</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
 
-        </div>
-      </div>
+            <div className="card support-card">
+              <span className="support-icon"><span className="material-symbols-outlined">support_agent</span></span>
+              <div className="support-body">
+                <span className="support-title">Need a quick review?</span>
+                <span className="support-sub">Ping maintainers anytime on Discord with your PR link — friendly feedback, no gatekeeping.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       {/* Floating Alpie chat */}
       <div className={`alpie-float ${chatOpen ? 'open' : ''}`}>
         {chatOpen && (
-          <div className="alpie-panel dark-card">
+          <div className="alpie-panel">
             <div className="alpie-head">
               <div className="alpie-avatar">
                 <img src="/alpie-logo.webp" alt="Alpie" style={{ width: 22, height: 22, objectFit: 'contain' }} />
@@ -1052,7 +1049,7 @@ Please write my "Make this README yours" entry now.`;
                 onClick={() => sendChat()}
                 disabled={chatBusy}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FBFAF7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               </button>
@@ -1080,164 +1077,50 @@ Please write my "Make this README yours" entry now.`;
             className="alpie-fab"
             onClick={() => setChatOpen(true)}
           >
-            <img src="/alpie-logo.webp" alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+            <span className="fab-dot" aria-hidden="true" />
+            <img src="/alpie-logo.webp" alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
             <span>Ask Alpie</span>
           </button>
         )}
       </div>
 
-      {/* Drafter modal */}
-      {drafterOpen && (
-        <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setDrafterOpen(false); }}>
-          <div className="modal">
-            <h3>Draft your README entry</h3>
-            <p className="lede">Tell Alpie a bit about yourself. You get back a Markdown block — copy it, paste it into profile/README.md under the &ldquo;Make this README yours&rdquo; heading, commit.</p>
-            <div className="field">
-              <label>Your name or GitHub handle</label>
-              <input
-                value={drafterForm.name}
-                onChange={(e) => setDrafterForm((f) => ({ ...f, name: e.target.value }))}
-                placeholder={user ? user.login : 'e.g. maya-builds'}
-              />
+      {/* Footer */}
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <div className="footer-brand-row">
+                <img src="/alpie-logo.webp" alt="169Pi logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+                <span className="footer-brand-name">169Pi Preptember</span>
+              </div>
+              <p className="footer-blurb">
+                Built for Preptember 2026 — an open warm-up and companion to Hacktoberfest. Empowering first-time open-source builders with guided workflows.
+              </p>
             </div>
-            <div className="field">
-              <label>Medium</label>
-              <select
-                value={drafterForm.medium}
-                onChange={(e) => setDrafterForm((f) => ({ ...f, medium: e.target.value }))}
-              >
-                <option value="svg">Custom SVG art / hero image</option>
-                <option value="diagram">Explanatory diagram (Mermaid / SVG)</option>
-                <option value="benchmark">Benchmark visualization (GSM8K / MMLU / SWE-Bench)</option>
-                <option value="demo">Runnable micro-demo</option>
-                <option value="ascii">Structured ASCII depicting something</option>
-                <option value="writing">Writing with a visual layout</option>
-              </select>
-            </div>
-            <div className="field">
-              <label>Vibe / hint (optional)</label>
-              <textarea
-                value={drafterForm.vibe}
-                onChange={(e) => setDrafterForm((f) => ({ ...f, vibe: e.target.value }))}
-                placeholder="e.g. focus on 4-bit reasoning, keep it warm, mention India"
-              />
-            </div>
-            {draft && (
-              <div className="draft-block">{draft}</div>
-            )}
-            <div className="modal-actions">
-              {draft && (
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  onClick={async () => {
-                    try { await navigator.clipboard.writeText(draft); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch {}
-                  }}
-                >
-                  {copied ? 'Copied!' : 'Copy Markdown'}
-                </button>
-              )}
-              <div className="spacer" />
-              <button type="button" className="btn-ghost" onClick={() => setDrafterOpen(false)}>Close</button>
-              <button
-                type="button"
-                className="btn-solid"
-                onClick={runDrafter}
-                disabled={drafterBusy || !drafterForm.name.trim()}
-              >
-                {drafterBusy ? 'Drafting…' : draft ? 'Regenerate' : 'Draft it'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Creation Studio — no-code SVG generator, runs entirely in the browser */}
-      {studioOpen && (
-        <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) setStudioOpen(false); }}>
-          <div className="modal">
-            <h3>Creation Studio</h3>
-            <p className="lede">No drawing app, no code. Type a message, pick a look, and get a ready-to-paste <Term k="svg">SVG</Term> — copy the code straight into profile/README.md, or download it. Everything happens in your browser.</p>
-            <div className="field">
-              <label>Your GitHub handle</label>
-              <input
-                value={studioForm.handle}
-                onChange={(e) => setStudioForm((f) => ({ ...f, handle: e.target.value }))}
-                placeholder={user ? user.login : 'e.g. maya-builds'}
-              />
-            </div>
-            <div className="field">
-              <label>Your message (one line works best)</label>
-              <input
-                value={studioForm.message}
-                onChange={(e) => setStudioForm((f) => ({ ...f, message: e.target.value }))}
-                placeholder="e.g. Reasoning, in 4 bits."
-                maxLength={84}
-              />
-            </div>
-            <div className="field">
-              <label>Look</label>
-              <div className="studio-themes">
-                {Object.keys(STUDIO_THEMES).map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    className={`studio-swatch ${studioForm.theme === key ? 'active' : ''}`}
-                    onClick={() => setStudioForm((f) => ({ ...f, theme: key }))}
-                    aria-label={`${key} theme`}
-                    aria-pressed={studioForm.theme === key}
-                    style={{ background: STUDIO_THEMES[key].bg, color: STUDIO_THEMES[key].accent }}
-                  >
-                    {key}
-                  </button>
-                ))}
+            <div className="footer-col">
+              <span className="footer-col-title">Resources</span>
+              <div className="footer-links">
+                <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer">Alpie-Core GitHub</a>
+                <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer">Hugging Face Weights</a>
+                <a href="https://playground.169pi.ai/dashboard" target="_blank" rel="noreferrer">Web Playground</a>
+                <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer">Kaggle Notebooks</a>
               </div>
             </div>
-            <div className="studio-preview" dangerouslySetInnerHTML={{ __html: studioSvg }} />
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={async () => {
-                  try { await navigator.clipboard.writeText(studioSvg); setStudioCopied(true); setTimeout(() => setStudioCopied(false), 1500); } catch {}
-                }}
-              >
-                {studioCopied ? 'Copied!' : 'Copy SVG code'}
-              </button>
-              <button
-                type="button"
-                className="btn-ghost"
-                onClick={() => {
-                  try {
-                    const blob = new Blob([studioSvg], { type: 'image/svg+xml' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${(studioForm.handle || 'preptember').trim() || 'preptember'}-alpie.svg`;
-                    a.click();
-                    setTimeout(() => URL.revokeObjectURL(url), 1000);
-                  } catch {}
-                }}
-              >
-                Download .svg
-              </button>
-              <div className="spacer" />
-              <button type="button" className="btn-solid" onClick={() => setStudioOpen(false)}>Done</button>
+            <div className="footer-col">
+              <span className="footer-col-title">Community</span>
+              <div className="footer-links">
+                <a href={DISCORD_URL} target="_blank" rel="noreferrer">Discord Server</a>
+                <a href="#organizers">Organizer Toolkit</a>
+                <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">Source Repository</a>
+              </div>
             </div>
           </div>
+          <div className="footer-bar">
+            <span>Built by <a className="strong" href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">@kindavishal</a> for Preptember 2026 · unofficial companion to Hacktoberfest</span>
+            <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">github.com/kindavishal/169pi</a>
+          </div>
         </div>
-      )}
-
-      <div className="site-footer">
-        Built by{' '}
-        <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">
-          @kindavishal
-        </a>{' '}
-        for Preptember 2026 · unofficial companion to Hacktoberfest ·{' '}
-        <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">
-          github.com/kindavishal/169pi
-        </a>
-      </div>
-    </main>
+      </footer>
+    </div>
   );
 }
