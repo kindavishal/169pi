@@ -68,9 +68,8 @@ const MONO = "'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 // One co-branded design, rendered at whichever size is asked for. Both sizes
 // share the same message, so editing the fields updates both. Fully
 // self-contained (no external assets/scripts) — safe to rasterize to PNG.
-function buildSvg(size, { community, handle, logo }) {
+function buildSvg(size, { community, logo }) {
   const name = (community || 'Your Community').trim();
-  const at = (handle || 'your-handle').trim().replace(/^@/, '');
 
   if (size === 'story') {
     // Instagram Story — 1080 × 1920 (9:16)
@@ -98,8 +97,7 @@ function buildSvg(size, { community, handle, logo }) {
   <text x="140" y="1324" font-family="${SANS}" font-size="38" fill="#c3d3e8">with</text>
   <text x="140" y="1410" font-family="${SANS}" font-size="66" font-weight="700" fill="#10B981">#GoodFirstAlpie</text>
   <line x1="96" y1="1760" x2="984" y2="1760" stroke="#1E3835" stroke-width="2"/>
-  <text x="96" y="1826" font-family="${MONO}" font-size="30" font-weight="700" fill="#4edea3">@${esc(at)}</text>
-  <text x="984" y="1826" text-anchor="end" font-family="${MONO}" font-size="24" fill="#7e8ea3">Road to Hacktoberfest 🧱</text>${logoMarkup}
+  <text x="96" y="1826" font-family="${MONO}" font-size="26" fill="#4edea3" letter-spacing="1">Preptember · Road to Hacktoberfest 🧱</text>${logoMarkup}
 </svg>`;
   }
 
@@ -124,8 +122,7 @@ function buildSvg(size, { community, handle, logo }) {
   <text x="72" y="420" font-family="${SANS}" font-size="30" fill="#c3d3e8">Make your first contribution with</text>
   <text x="72" y="478" font-family="${SANS}" font-size="52" font-weight="700" fill="#10B981">#GoodFirstAlpie</text>
   <line x1="72" y1="536" x2="1128" y2="536" stroke="#1E3835" stroke-width="2"/>
-  <text x="72" y="586" font-family="${MONO}" font-size="24" font-weight="700" fill="#4edea3">@${esc(at)}</text>
-  <text x="1128" y="586" text-anchor="end" font-family="${MONO}" font-size="19" fill="#7e8ea3">Road to Hacktoberfest 🧱</text>${logoMarkup}
+  <text x="72" y="586" font-family="${MONO}" font-size="20" fill="#4edea3" letter-spacing="1">Preptember · Road to Hacktoberfest 🧱</text>${logoMarkup}
 </svg>`;
 }
 
@@ -173,10 +170,10 @@ export default function Organizers() {
   // One design, both sizes — kept in a map so editing the fields updates both.
   const svgs = useMemo(
     () => ({
-      wide: buildSvg('wide', { community, handle, logo }),
-      story: buildSvg('story', { community, handle, logo }),
+      wide: buildSvg('wide', { community, logo }),
+      story: buildSvg('story', { community, logo }),
     }),
-    [community, handle, logo]
+    [community, logo]
   );
 
   const postCaption = captionTouched ? caption : defaultCaption(community, handle);
