@@ -33,7 +33,7 @@ const CURRICULUM = [
     duration: '25 min',
     organizer:
       'Guide attendees through generating or drawing their custom entry — SVG art, an explanatory diagram, or a runnable micro-demo.',
-    attendee: 'Use the Community Canvas below to create their entry.',
+    attendee: 'Draw or generate their entry — SVG art, a diagram, or a runnable micro-demo.',
     icon: 'palette',
   },
   {
@@ -46,11 +46,11 @@ const CURRICULUM = [
   },
 ];
 
-// ── Community Canvas templates ────────────────────────────────────
+// ── Community Canvas templates (co-branded social posts) ──────────
 const TEMPLATES = [
-  { id: 'badge', label: 'Contributor badge', hint: 'Dark card · bold wordmark', swatch: '#0D1117' },
-  { id: 'banner', label: 'Wide banner', hint: 'Light parchment · header strip', swatch: '#F4F1EA' },
-  { id: 'terminal', label: 'Terminal card', hint: 'Cyber-terminal · commit log', swatch: '#081524' },
+  { id: 'square', label: 'Square post', hint: '1080×1080 · Instagram / LinkedIn', swatch: '#0D1117', w: 1080, h: 1080 },
+  { id: 'landscape', label: 'Link / X card', hint: '1200×630 · X, LinkedIn, OG', swatch: '#F4F1EA', w: 1200, h: 630 },
+  { id: 'portrait', label: 'Story', hint: '1080×1350 · Stories / Reels', swatch: '#081524', w: 1080, h: 1350 },
 ];
 
 function esc(s = '') {
@@ -64,75 +64,98 @@ function esc(s = '') {
 const SANS = "'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
 const MONO = "'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 
-// Builds a fully self-contained SVG string for the chosen template. No external
-// assets or scripts — safe to commit as a file or paste inline into a README.
+// Builds a fully self-contained, co-branded social-post SVG for the chosen
+// template. No external assets or scripts — safe to rasterize to PNG or share.
 function buildSvg({ template, community, handle, tagline, logo }) {
   const name = (community || 'Your Community').trim();
   const tag = (tagline || 'Our first open-source contribution').trim();
   const at = (handle || 'your-handle').trim().replace(/^@/, '');
-  const nameSize = name.length > 22 ? 30 : name.length > 15 ? 40 : 50;
 
-  if (template === 'banner') {
+  if (template === 'landscape') {
+    const nameSize = name.length > 26 ? 52 : name.length > 18 ? 68 : 84;
     const logoMarkup = logo
-      ? `\n  <image href="${logo}" x="628" y="96" width="132" height="108" preserveAspectRatio="xMidYMid meet"/>`
+      ? `\n  <image href="${logo}" x="980" y="86" width="148" height="120" preserveAspectRatio="xMidYMid meet"/>`
       : '';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300" role="img" aria-label="${esc(name)} — Preptember 2026 with Alpie-Core">
-  <rect x="3" y="3" width="794" height="294" rx="20" fill="#F4F1EA" stroke="#E2DDD2" stroke-width="2"/>
-  <rect x="3" y="3" width="14" height="294" rx="7" fill="#10B981"/>
-  <text x="52" y="66" font-family="${MONO}" font-size="15" font-weight="700" fill="#134E4A" letter-spacing="2">ALPIE-CORE · 32B · 4-BIT</text>
-  <text x="52" y="150" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="#0D1716">${esc(name)}</text>
-  <text x="52" y="188" font-family="${SANS}" font-size="19" fill="#526361">${esc(tag)}</text>
-  <line x1="52" y1="226" x2="748" y2="226" stroke="#E2DDD2" stroke-width="2"/>
-  <text x="52" y="262" font-family="${MONO}" font-size="17" font-weight="700" fill="#1B7A6E">@${esc(at)}</text>
-  <text x="748" y="262" text-anchor="end" font-family="${MONO}" font-size="13" fill="#6b7b78">Preptember 2026 · first brick 🧱</text>${logoMarkup}
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="${esc(name)} — Preptember 2026 with 169Pi Alpie-Core">
+  <rect width="1200" height="630" fill="#F4F1EA"/>
+  <rect x="0" y="0" width="18" height="630" fill="#10B981"/>
+  <text x="72" y="122" font-family="${MONO}" font-size="22" font-weight="700" fill="#134E4A" letter-spacing="3">ALPIE-CORE · 32B · 4-BIT · PREPTEMBER 2026</text>
+  <text x="72" y="300" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="#0D1716">${esc(name)}</text>
+  <text x="72" y="360" font-family="${SANS}" font-size="30" fill="#526361">${esc(tag)}</text>
+  <line x1="72" y1="470" x2="1128" y2="470" stroke="#E2DDD2" stroke-width="2"/>
+  <text x="72" y="532" font-family="${MONO}" font-size="26" font-weight="700" fill="#1B7A6E">@${esc(at)}</text>
+  <text x="1128" y="532" text-anchor="end" font-family="${MONO}" font-size="20" fill="#6b7b78">Road to Hacktoberfest 🧱</text>${logoMarkup}
 </svg>`;
   }
 
-  if (template === 'terminal') {
+  if (template === 'portrait') {
+    const nameSize = name.length > 22 ? 58 : name.length > 15 ? 80 : 104;
     const logoMarkup = logo
-      ? `\n  <image href="${logo}" x="656" y="150" width="104" height="80" preserveAspectRatio="xMidYMid meet" opacity="0.9"/>`
+      ? `\n  <image href="${logo}" x="864" y="104" width="120" height="96" preserveAspectRatio="xMidYMid meet"/>`
       : '';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420" role="img" aria-label="${esc(name)} — Preptember 2026 with Alpie-Core">
-  <rect x="3" y="3" width="794" height="414" rx="18" fill="#081524" stroke="#1b3147" stroke-width="2"/>
-  <rect x="3" y="3" width="794" height="46" rx="18" fill="#0c1a29"/>
-  <rect x="3" y="30" width="794" height="19" fill="#0c1a29"/>
-  <circle cx="36" cy="26" r="6" fill="#e06c5b"/>
-  <circle cx="58" cy="26" r="6" fill="#e8b84b"/>
-  <circle cx="80" cy="26" r="6" fill="#57b877"/>
-  <text x="400" y="31" text-anchor="middle" font-family="${MONO}" font-size="13" fill="#64748b">preptember — 169pi/.github</text>
-  <text x="40" y="112" font-family="${MONO}" font-size="18" fill="#4cd7f6">$ 169pi preptember --join</text>
-  <text x="40" y="154" font-family="${MONO}" font-size="17" fill="#10B981">✓ starred 169Pi/Alpie-Core  (32B · 4-bit)</text>
-  <text x="40" y="188" font-family="${MONO}" font-size="17" fill="#10B981">✓ joined the community</text>
-  <text x="40" y="238" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="#d4e4fa">${esc(name)}</text>
-  <text x="40" y="276" font-family="${MONO}" font-size="16" fill="#94a3b8">${esc(tag)}</text>
-  <text x="40" y="344" font-family="${MONO}" font-size="18" fill="#4edea3">$ git commit -m "@${esc(at)}: first brick"</text>
-  <rect x="40" y="360" width="14" height="22" fill="#4edea3"/>
-  <text x="760" y="380" text-anchor="end" font-family="${MONO}" font-size="13" fill="#64748b">Preptember 2026 🧱</text>${logoMarkup}
-</svg>`;
-  }
-
-  // default: badge (dark)
-  const logoMarkup = logo
-    ? `\n  <image href="${logo}" x="640" y="40" width="120" height="72" preserveAspectRatio="xMidYMid meet"/>`
-    : '';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" width="800" height="420" role="img" aria-label="${esc(name)} — Preptember 2026 with Alpie-Core">
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350" role="img" aria-label="${esc(name)} — Preptember 2026 with 169Pi Alpie-Core">
   <defs>
-    <linearGradient id="ac-grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4edea3"/>
-      <stop offset="1" stop-color="#0284c7"/>
-    </linearGradient>
+    <linearGradient id="ac-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4edea3"/><stop offset="1" stop-color="#4cd7f6"/></linearGradient>
+    <pattern id="ac-dots" width="44" height="44" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2.4" fill="#0f2a44"/></pattern>
   </defs>
-  <rect x="4" y="4" width="792" height="412" rx="24" fill="#0D1117" stroke="#1E3835" stroke-width="2"/>
-  <rect x="40" y="40" width="46" height="46" rx="13" fill="#10B981"/>
-  <text x="63" y="72" text-anchor="middle" font-family="${MONO}" font-size="22" font-weight="700" fill="#04121b">π</text>
-  <text x="104" y="58" font-family="${MONO}" font-size="16" font-weight="700" fill="#4edea3" letter-spacing="2">ALPIE-CORE</text>
-  <text x="104" y="80" font-family="${MONO}" font-size="12" fill="#7e8ea3">32B · 4-bit · built in India</text>
-  <text x="40" y="228" font-family="${SANS}" font-size="${nameSize + 2}" font-weight="700" fill="url(#ac-grad)">${esc(name)}</text>
-  <text x="40" y="268" font-family="${SANS}" font-size="20" fill="#c3d3e8">${esc(tag)}</text>
-  <line x1="40" y1="330" x2="760" y2="330" stroke="#1E3835" stroke-width="2"/>
-  <text x="40" y="370" font-family="${MONO}" font-size="19" font-weight="700" fill="#4edea3">@${esc(at)}</text>
-  <text x="760" y="370" text-anchor="end" font-family="${MONO}" font-size="14" fill="#7e8ea3">Preptember 2026 · first brick 🧱</text>${logoMarkup}
+  <rect width="1080" height="1350" fill="#081524"/>
+  <rect width="1080" height="1350" fill="url(#ac-dots)" opacity="0.5"/>
+  <rect x="36" y="36" width="1008" height="1278" rx="30" fill="none" stroke="#1b3147" stroke-width="2"/>
+  <rect x="96" y="112" width="66" height="66" rx="18" fill="#10B981"/>
+  <text x="129" y="156" text-anchor="middle" font-family="${MONO}" font-size="32" font-weight="700" fill="#04121b">π</text>
+  <text x="182" y="142" font-family="${MONO}" font-size="25" font-weight="700" fill="#4edea3" letter-spacing="2">ALPIE-CORE</text>
+  <text x="182" y="176" font-family="${MONO}" font-size="18" fill="#7e8ea3">32B · 4-bit · built in India</text>
+  <text x="96" y="560" font-family="${MONO}" font-size="24" fill="#4cd7f6" letter-spacing="4">PREPTEMBER 2026</text>
+  <text x="96" y="686" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="url(#ac-grad)">${esc(name)}</text>
+  <text x="96" y="750" font-family="${SANS}" font-size="32" fill="#c3d3e8">${esc(tag)}</text>
+  <rect x="96" y="852" width="888" height="132" rx="20" fill="#0c1a29" stroke="#1b3147" stroke-width="2"/>
+  <text x="130" y="908" font-family="${MONO}" font-size="26" fill="#4edea3">Make your first open-source</text>
+  <text x="130" y="948" font-family="${MONO}" font-size="26" fill="#4edea3">contribution to Alpie-Core 🧱</text>
+  <line x1="96" y1="1188" x2="984" y2="1188" stroke="#1b3147" stroke-width="2"/>
+  <text x="96" y="1252" font-family="${MONO}" font-size="27" font-weight="700" fill="#4edea3">@${esc(at)}</text>
+  <text x="984" y="1252" text-anchor="end" font-family="${MONO}" font-size="20" fill="#7e8ea3">169pi · Road to Hacktoberfest</text>${logoMarkup}
 </svg>`;
+  }
+
+  // default: square (dark)
+  const nameSize = name.length > 24 ? 60 : name.length > 16 ? 80 : 104;
+  const logoMarkup = logo
+    ? `\n  <image href="${logo}" x="864" y="92" width="120" height="90" preserveAspectRatio="xMidYMid meet"/>`
+    : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080" role="img" aria-label="${esc(name)} — Preptember 2026 with 169Pi Alpie-Core">
+  <defs>
+    <linearGradient id="ac-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4edea3"/><stop offset="1" stop-color="#0284c7"/></linearGradient>
+    <pattern id="ac-dots" width="44" height="44" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="2.4" fill="#12351f"/></pattern>
+  </defs>
+  <rect width="1080" height="1080" fill="#0D1117"/>
+  <rect width="1080" height="1080" fill="url(#ac-dots)" opacity="0.45"/>
+  <rect x="36" y="36" width="1008" height="1008" rx="30" fill="none" stroke="#1E3835" stroke-width="2"/>
+  <rect x="96" y="96" width="66" height="66" rx="18" fill="#10B981"/>
+  <text x="129" y="140" text-anchor="middle" font-family="${MONO}" font-size="32" font-weight="700" fill="#04121b">π</text>
+  <text x="182" y="126" font-family="${MONO}" font-size="25" font-weight="700" fill="#4edea3" letter-spacing="2">ALPIE-CORE</text>
+  <text x="182" y="160" font-family="${MONO}" font-size="18" fill="#7e8ea3">32B · 4-bit · built in India</text>
+  <text x="96" y="470" font-family="${MONO}" font-size="23" fill="#4edea3" letter-spacing="3">PREPTEMBER 2026 · ROAD TO HACKTOBERFEST</text>
+  <text x="96" y="590" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="url(#ac-grad)">${esc(name)}</text>
+  <text x="96" y="656" font-family="${SANS}" font-size="32" fill="#c3d3e8">${esc(tag)}</text>
+  <text x="96" y="752" font-family="${MONO}" font-size="22" fill="#94a3b8">★ Star  ·  ⑂ Fork  ·  Open a PR  →  with 169Pi</text>
+  <line x1="96" y1="906" x2="984" y2="906" stroke="#1E3835" stroke-width="2"/>
+  <text x="96" y="972" font-family="${MONO}" font-size="27" font-weight="700" fill="#4edea3">@${esc(at)}</text>
+  <text x="984" y="972" text-anchor="end" font-family="${MONO}" font-size="22" fill="#7e8ea3">first brick 🧱</text>${logoMarkup}
+</svg>`;
+}
+
+// Default, ready-to-paste social caption for the post.
+function defaultCaption(community, handle) {
+  const name = (community || 'Our community').trim() || 'Our community';
+  const at = (handle || '').trim().replace(/^@/, '');
+  const by = at ? ` Hosted by @${at}.` : '';
+  return `🚀 ${name} is doing Preptember with 169Pi!
+
+We're making our first open-source contribution to Alpie-Core — 169Pi's open-source 32B, 4-bit reasoning model built in India.${by}
+
+⭐ Star the repo · 💬 join the Discord · 🧱 open your first pull request with us.
+
+#Preptember #Hacktoberfest #OpenSource #AlpieCore #169Pi #FirstPR`;
 }
 
 // Default, ready-to-paste image-generation prompt for external tools.
@@ -143,14 +166,17 @@ function defaultFeaturePrompt(community) {
 
 export default function Organizers() {
   // Community Canvas state
-  const [template, setTemplate] = useState('badge');
+  const [template, setTemplate] = useState('square');
   const [community, setCommunity] = useState('');
   const [handle, setHandle] = useState('');
   const [tagline, setTagline] = useState('');
   const [logo, setLogo] = useState(null);
   const [logoName, setLogoName] = useState('');
   const [logoError, setLogoError] = useState('');
-  const [copiedSvg, setCopiedSvg] = useState(false);
+  const [caption, setCaption] = useState('');
+  const [captionTouched, setCaptionTouched] = useState(false);
+  const [copiedCaption, setCopiedCaption] = useState(false);
+  const [pngBusy, setPngBusy] = useState(false);
   const fileRef = useRef(null);
 
   // Feature-prompt state
@@ -165,7 +191,10 @@ export default function Organizers() {
     [template, community, handle, tagline, logo]
   );
 
+  const dims = TEMPLATES.find((t) => t.id === template) || TEMPLATES[0];
+  const postCaption = captionTouched ? caption : defaultCaption(community, handle);
   const featurePrompt = promptTouched ? prompt : defaultFeaturePrompt(community);
+  const fileBase = `preptember-${(community || 'post').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'post'}`;
 
   function onLogo(e) {
     const f = e.target.files && e.target.files[0];
@@ -215,18 +244,54 @@ export default function Organizers() {
     setTimeout(() => setFlag(false), 1800);
   }
 
+  function download(filename, blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function exportSvg() {
     try {
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `preptember-${(handle || 'entry').replace(/^@/, '') || 'entry'}.svg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      download(`${fileBase}.svg`, new Blob([svg], { type: 'image/svg+xml' }));
     } catch {}
+  }
+
+  // Rasterizes the current SVG to a high-resolution PNG so it can be posted
+  // directly to social platforms (which don't accept SVG uploads).
+  function exportPng() {
+    setPngBusy(true);
+    try {
+      const scale = 2;
+      const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = dims.w * scale;
+          canvas.height = dims.h * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((png) => {
+            if (png) download(`${fileBase}.png`, png);
+            URL.revokeObjectURL(url);
+            setPngBusy(false);
+          }, 'image/png');
+        } catch {
+          URL.revokeObjectURL(url);
+          setPngBusy(false);
+        }
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); setPngBusy(false); };
+      img.src = url;
+    } catch {
+      setPngBusy(false);
+    }
   }
 
   async function generatePrompt() {
@@ -288,9 +353,9 @@ export default function Organizers() {
           </h1>
           <p className="org-lede">
             Everything below maps to the live Preptember flow, so you don&apos;t build a lesson plan from scratch.
-            Follow the standardized agenda, use the <strong>Community Canvas</strong> to make co-branded SVG art on the
-            spot, and grab a prompt template for featuring your community. Meetup, campus club or Discord — bring a
-            whole group through their first pull request together.
+            Follow the standardized agenda, use the <strong>Community Canvas</strong> to make a co-branded social post
+            announcing your session, and grab a prompt template for featuring your community. Meetup, campus club or
+            Discord — bring a whole group through their first pull request together.
           </p>
           <div className="org-intro-cta">
             <a href="#curriculum" className="hbtn hbtn-primary">
@@ -354,11 +419,12 @@ export default function Organizers() {
         <section className="section" id="canvas">
           <div className="card org-card">
             <div className="org-card-head">
-              <span className="eyebrow"><span className="material-symbols-outlined">draw</span>02 · The Community Canvas</span>
-              <h2 className="org-card-title">Make a co-branded entry — no design software</h2>
+              <span className="eyebrow"><span className="material-symbols-outlined">share</span>02 · The Community Canvas</span>
+              <h2 className="org-card-title">Make a co-branded social post — no design software</h2>
               <p className="org-card-sub">
-                Pick a template, drop in your campus or club logo, add a GitHub handle, then export a valid SVG or
-                copy the code straight into the GitHub web editor when editing <code>profile/README.md</code>.
+                Announce your session on social. Pick a post size, drop in your campus or club logo, add a handle,
+                then download a ready-to-share image and copy a matching caption. Tag <strong>169Pi</strong> when you
+                post — we reshare community shout-outs.
               </p>
             </div>
 
@@ -366,7 +432,7 @@ export default function Organizers() {
               {/* Controls */}
               <div className="canvas-controls">
                 <div className="canvas-field">
-                  <label className="canvas-label">Template</label>
+                  <label className="canvas-label">Post size</label>
                   <div className="canvas-templates">
                     {TEMPLATES.map((t) => (
                       <button
@@ -393,13 +459,13 @@ export default function Organizers() {
                 </div>
 
                 <div className="canvas-field">
-                  <label className="canvas-label" htmlFor="cc-handle">GitHub handle</label>
+                  <label className="canvas-label" htmlFor="cc-handle">Handle <span className="canvas-opt">(@ — GitHub or social)</span></label>
                   <input id="cc-handle" className="canvas-input" type="text" placeholder="your-handle"
                     value={handle} onChange={(e) => setHandle(e.target.value)} maxLength={39} />
                 </div>
 
                 <div className="canvas-field">
-                  <label className="canvas-label" htmlFor="cc-tagline">Tagline <span className="canvas-opt">(optional)</span></label>
+                  <label className="canvas-label" htmlFor="cc-tagline">Message <span className="canvas-opt">(optional)</span></label>
                   <input id="cc-tagline" className="canvas-input" type="text" placeholder="Our first open-source contribution"
                     value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={60} />
                 </div>
@@ -420,29 +486,53 @@ export default function Organizers() {
                     )}
                   </div>
                   {logoError && <span className="canvas-error">{logoError}</span>}
-                  <span className="canvas-help">SVG or PNG under 400 KB. It gets embedded in the file — for logos, exporting the .svg and committing it renders most reliably.</span>
+                  <span className="canvas-help">SVG or PNG under 400 KB. It sits top-right on the post, co-branded with Alpie-Core.</span>
                 </div>
               </div>
 
-              {/* Preview + export */}
+              {/* Preview + download */}
               <div className="canvas-stage">
                 <div className="canvas-preview" aria-label="Live preview" dangerouslySetInnerHTML={{ __html: svg }} />
                 <div className="canvas-actions">
-                  <button type="button" className="btn-solid" onClick={exportSvg}>
-                    <span className="material-symbols-outlined">download</span>Export to SVG
+                  <button type="button" className="btn-solid" onClick={exportPng} disabled={pngBusy}>
+                    <span className="material-symbols-outlined">{pngBusy ? 'hourglass_top' : 'download'}</span>{pngBusy ? 'Rendering…' : 'Download PNG'}
                   </button>
-                  <button type="button" className="btn-ghost" onClick={() => copyText(svg, setCopiedSvg)}>
-                    <span className="material-symbols-outlined">content_copy</span>{copiedSvg ? 'Copied!' : 'Copy code'}
+                  <button type="button" className="btn-ghost" onClick={exportSvg}>
+                    <span className="material-symbols-outlined">code</span>Download SVG
                   </button>
                 </div>
-                <div className="canvas-pipeline">
-                  <span className="canvas-pipeline-title">Direct-to-GitHub</span>
-                  <ol>
-                    <li>In your fork, edit <code>profile/README.md</code> in the GitHub web editor.</li>
-                    <li>Under <strong>@169pi — the first brick 🧱</strong>, paste the copied SVG (or reference the exported file).</li>
-                    <li>Commit, then open your Pull Request.</li>
-                  </ol>
+                <span className="canvas-help">PNG uploads straight to any platform. SVG stays crisp for slides or print.</span>
+              </div>
+            </div>
+
+            {/* Caption + posting steps */}
+            <div className="canvas-post">
+              <div className="prompt-box">
+                <div className="prompt-box-head">
+                  <span className="prompt-box-title"><span className="material-symbols-outlined">chat</span>Caption</span>
+                  <div className="prompt-box-actions">
+                    <button type="button" className="btn-solid btn-sm" onClick={() => copyText(postCaption, setCopiedCaption)}>
+                      <span className="material-symbols-outlined">content_copy</span>{copiedCaption ? 'Copied!' : 'Copy caption'}
+                    </button>
+                  </div>
                 </div>
+                <textarea
+                  className="prompt-text"
+                  value={postCaption}
+                  onChange={(e) => { setCaption(e.target.value); setCaptionTouched(true); }}
+                  rows={8}
+                  aria-label="Social post caption"
+                />
+                <span className="canvas-help">Fills in from the community name and handle above until you start typing. Add your date, venue or link before posting.</span>
+              </div>
+
+              <div className="canvas-pipeline">
+                <span className="canvas-pipeline-title">Post it in 3 steps</span>
+                <ol>
+                  <li>Download the <strong>PNG</strong> (add your logo above to co-brand it).</li>
+                  <li>Copy the caption and drop in your date, venue or sign-up link.</li>
+                  <li>Post on LinkedIn, X or Instagram and tag <strong>169Pi</strong>.</li>
+                </ol>
               </div>
             </div>
           </div>
@@ -459,14 +549,6 @@ export default function Organizers() {
                 or drive one with the Alpie API), then feature the result on your community&apos;s page. Add your community
                 name above and let Alpie tailor the prompt, or copy the template and tweak it yourself.
               </p>
-            </div>
-
-            <div className="platform-chips">
-              <span className="platform-chip">Midjourney</span>
-              <span className="platform-chip">DALL·E</span>
-              <span className="platform-chip">Ideogram</span>
-              <span className="platform-chip">Stable Diffusion</span>
-              <a className="platform-chip platform-chip-link" href="https://playground.169pi.ai/dashboard" target="_blank" rel="noreferrer">Alpie API ↗</a>
             </div>
 
             <div className="prompt-box">

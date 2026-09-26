@@ -1238,15 +1238,11 @@ h1.hero-h .accent {
 }
 .canvas-pipeline strong { color: var(--text-soft); }
 
-/* Featured / prompt */
-.platform-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.platform-chip {
-  font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 500; color: var(--chip-fg);
-  background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px;
-}
-.platform-chip-link { color: var(--teal-bright); border-color: var(--tint-border); background: var(--tint-bg); }
-.platform-chip-link:hover { color: var(--teal-deep); }
+/* Caption + posting steps (Community Canvas) */
+.canvas-post { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; align-items: start; margin-top: 2px; }
+@media (max-width: 900px) { .canvas-post { grid-template-columns: 1fr; } }
 
+/* Featured / prompt */
 .prompt-box { display: flex; flex-direction: column; gap: 10px; }
 .prompt-box-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
 .prompt-box-title {

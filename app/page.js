@@ -667,7 +667,7 @@ export default function Home() {
               <p className="organize-sub">
                 Meetup, campus club or Discord — bring people through their first contribution together.
                 The <strong>For Organizers</strong> page has a ready-to-run instructor-led agenda, a Community Canvas
-                for making co-branded SVG art, and prompt templates for featuring your community.
+                for co-branded social posts, and prompt templates for featuring your community.
               </p>
             </div>
             <div className="organize-actions">
