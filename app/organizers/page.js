@@ -86,8 +86,8 @@ function buildSvg(size, { community, logo }) {
   <rect width="1080" height="1920" fill="url(#ac-dots)" opacity="0.45"/>
   <rect x="40" y="40" width="1000" height="1840" rx="34" fill="none" stroke="#1E3835" stroke-width="2"/>
   <image href="${MARK_169PI}" x="96" y="150" width="76" height="76" preserveAspectRatio="xMidYMid meet"/>
-  <text x="192" y="186" font-family="${MONO}" font-size="28" font-weight="700" fill="#4edea3" letter-spacing="2">169PI · ALPIE-CORE</text>
-  <text x="192" y="224" font-family="${MONO}" font-size="20" fill="#7e8ea3">32B · 4-bit · built in India</text>
+  <text x="192" y="186" font-family="${MONO}" font-size="28" font-weight="700" fill="#4edea3" letter-spacing="2">169PI</text>
+  <text x="192" y="224" font-family="${MONO}" font-size="20" fill="#7e8ea3">built in India</text>
   <text x="96" y="760" font-family="${MONO}" font-size="30" fill="#4cd7f6" letter-spacing="5">PREPTEMBER · OPEN SOURCE</text>
   <text x="96" y="900" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="url(#ac-grad)">${esc(name)}</text>
   <text x="96" y="988" font-family="${SANS}" font-size="52" font-weight="700" fill="#d4e4fa">× 169Pi</text>
@@ -115,8 +115,8 @@ function buildSvg(size, { community, logo }) {
   <rect width="1200" height="630" fill="url(#ac-dots)" opacity="0.45"/>
   <rect x="28" y="28" width="1144" height="574" rx="28" fill="none" stroke="#1E3835" stroke-width="2"/>
   <image href="${MARK_169PI}" x="72" y="66" width="64" height="64" preserveAspectRatio="xMidYMid meet"/>
-  <text x="150" y="98" font-family="${MONO}" font-size="21" font-weight="700" fill="#4edea3" letter-spacing="2">169PI · ALPIE-CORE</text>
-  <text x="150" y="122" font-family="${MONO}" font-size="15" fill="#7e8ea3">32B · 4-bit · Preptember</text>
+  <text x="150" y="98" font-family="${MONO}" font-size="21" font-weight="700" fill="#4edea3" letter-spacing="2">169PI</text>
+  <text x="150" y="122" font-family="${MONO}" font-size="15" fill="#7e8ea3">Preptember · Open Source</text>
   <text x="72" y="280" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="url(#ac-grad)">${esc(name)}<tspan font-family="${SANS}" fill="#d4e4fa"> × 169Pi</tspan></text>
   <text x="72" y="330" font-family="${MONO}" font-size="24" fill="#4cd7f6" letter-spacing="2">for Open Source</text>
   <text x="72" y="420" font-family="${SANS}" font-size="30" fill="#c3d3e8">Make your first contribution with</text>
