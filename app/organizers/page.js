@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { GithubMark, SiteFooter, ThemeToggle } from '../_components/chrome';
+import { MARK_169PI } from './logo';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
@@ -79,8 +80,10 @@ function buildSvg({ template, community, handle, tagline, logo }) {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="${esc(name)} — Preptember 2026 with 169Pi Alpie-Core">
   <rect width="1200" height="630" fill="#F4F1EA"/>
   <rect x="0" y="0" width="18" height="630" fill="#10B981"/>
-  <text x="72" y="122" font-family="${MONO}" font-size="22" font-weight="700" fill="#134E4A" letter-spacing="3">ALPIE-CORE · 32B · 4-BIT · PREPTEMBER 2026</text>
-  <text x="72" y="300" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="#0D1716">${esc(name)}</text>
+  <image href="${MARK_169PI}" x="72" y="58" width="66" height="66" preserveAspectRatio="xMidYMid meet"/>
+  <text x="154" y="92" font-family="${MONO}" font-size="21" font-weight="700" fill="#134E4A" letter-spacing="2">169PI · ALPIE-CORE</text>
+  <text x="154" y="116" font-family="${MONO}" font-size="15" fill="#526361">32B · 4-bit · Preptember 2026</text>
+  <text x="72" y="308" font-family="${SANS}" font-size="${nameSize}" font-weight="700" fill="#0D1716">${esc(name)}</text>
   <text x="72" y="360" font-family="${SANS}" font-size="30" fill="#526361">${esc(tag)}</text>
   <line x1="72" y1="470" x2="1128" y2="470" stroke="#E2DDD2" stroke-width="2"/>
   <text x="72" y="532" font-family="${MONO}" font-size="26" font-weight="700" fill="#1B7A6E">@${esc(at)}</text>
@@ -101,8 +104,7 @@ function buildSvg({ template, community, handle, tagline, logo }) {
   <rect width="1080" height="1350" fill="#081524"/>
   <rect width="1080" height="1350" fill="url(#ac-dots)" opacity="0.5"/>
   <rect x="36" y="36" width="1008" height="1278" rx="30" fill="none" stroke="#1b3147" stroke-width="2"/>
-  <rect x="96" y="112" width="66" height="66" rx="18" fill="#10B981"/>
-  <text x="129" y="156" text-anchor="middle" font-family="${MONO}" font-size="32" font-weight="700" fill="#04121b">π</text>
+  <image href="${MARK_169PI}" x="96" y="112" width="66" height="66" preserveAspectRatio="xMidYMid meet"/>
   <text x="182" y="142" font-family="${MONO}" font-size="25" font-weight="700" fill="#4edea3" letter-spacing="2">ALPIE-CORE</text>
   <text x="182" y="176" font-family="${MONO}" font-size="18" fill="#7e8ea3">32B · 4-bit · built in India</text>
   <text x="96" y="560" font-family="${MONO}" font-size="24" fill="#4cd7f6" letter-spacing="4">PREPTEMBER 2026</text>
@@ -130,8 +132,7 @@ function buildSvg({ template, community, handle, tagline, logo }) {
   <rect width="1080" height="1080" fill="#0D1117"/>
   <rect width="1080" height="1080" fill="url(#ac-dots)" opacity="0.45"/>
   <rect x="36" y="36" width="1008" height="1008" rx="30" fill="none" stroke="#1E3835" stroke-width="2"/>
-  <rect x="96" y="96" width="66" height="66" rx="18" fill="#10B981"/>
-  <text x="129" y="140" text-anchor="middle" font-family="${MONO}" font-size="32" font-weight="700" fill="#04121b">π</text>
+  <image href="${MARK_169PI}" x="96" y="96" width="66" height="66" preserveAspectRatio="xMidYMid meet"/>
   <text x="182" y="126" font-family="${MONO}" font-size="25" font-weight="700" fill="#4edea3" letter-spacing="2">ALPIE-CORE</text>
   <text x="182" y="160" font-family="${MONO}" font-size="18" fill="#7e8ea3">32B · 4-bit · built in India</text>
   <text x="96" y="470" font-family="${MONO}" font-size="23" fill="#4edea3" letter-spacing="3">PREPTEMBER 2026 · ROAD TO HACKTOBERFEST</text>
