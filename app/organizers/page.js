@@ -131,10 +131,12 @@ function defaultCaption(community) {
   const name = (community || 'Our community').trim() || 'Our community';
   return `🚀 ${name} × 169Pi for Open Source!
 
+📍 [Add your community name, date, venue & sign-up link here]
+
 We're making our first open-source contribution to Alpie-Core — 169Pi's open 32B, 4-bit reasoning model built in India. Come build with us.
 
 🧱 Make your first contribution with #GoodFirstAlpie
-⭐ Star the repo · 💬 join the Discord · 🔀 open your first PR
+⭐ Star the repo · 🔀 open your first PR · 🌱 contribute to open source
 
 #GoodFirstAlpie #Preptember #Hacktoberfest #OpenSource #AlpieCore #169Pi`;
 }
