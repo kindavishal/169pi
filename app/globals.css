@@ -199,6 +199,7 @@ img { max-width: 100%; display: block; }
   min-height: 100vh;
   background: var(--bg);
   position: relative;
+  overflow-x: clip;   /* contain absolutely-positioned tooltips; no horizontal scroll */
 }
 .page::before {
   content: '';
@@ -792,7 +793,7 @@ h1.hero-h .accent {
 .term:focus-visible { outline: 2px solid var(--teal-bright); outline-offset: 2px; border-radius: 3px; }
 .term-tip {
   position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 60;
-  width: max-content; max-width: 260px;
+  width: max-content; max-width: min(260px, calc(100vw - 32px));
   background: var(--slate); color: #eafaf5; border-radius: 10px;
   padding: 9px 11px; font-size: 12px; font-weight: 400; line-height: 1.45; font-style: normal;
   box-shadow: 0 10px 26px rgba(15,45,55,0.32);
@@ -1003,8 +1004,10 @@ h1.hero-h .accent {
   .hero-cta { gap: 10px; }
   .hbtn { flex: 1 1 100%; }
   .bench-section { padding: 20px 16px; }
+  .bench-head-meta { text-align: left; }
   .try-card { padding: 16px; }
   .try-primary { grid-template-columns: 1fr; }
+  .alpie-float { right: 16px; bottom: 16px; }
   .organize-card { padding: 20px; }
   .organize-actions { width: 100%; }
   .organize-btn, .organize-link { flex: 1 1 100%; justify-content: center; }
