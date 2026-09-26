@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePresence } from '../lib/usePresence';
+import { GithubMark, SiteFooter, ThemeToggle } from './_components/chrome';
 
 const OWNER = process.env.NEXT_PUBLIC_GITHUB_OWNER || '169Pi';
 const REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'Alpie-Core';
@@ -233,91 +234,6 @@ function GhMock({ kind }) {
   return null;
 }
 
-const THEME_KEY = 'preptember.theme';
-function applyTheme(pref) {
-  try {
-    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const resolved = pref === 'system' ? (sysDark ? 'dark' : 'light') : pref;
-    document.documentElement.setAttribute('data-theme', resolved);
-  } catch {}
-}
-const THEME_OPTIONS = [
-  {
-    id: 'light', label: 'Light',
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="4.2" />
-        <path d="M12 2v2.5M12 19.5V22M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M2 12h2.5M19.5 12H22M4.5 19.5l1.8-1.8M17.7 6.3l1.8-1.8" />
-      </svg>
-    ),
-  },
-  {
-    id: 'system', label: 'System',
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="3" y="4" width="18" height="12" rx="2" />
-        <path d="M8 20h8M12 16v4" />
-      </svg>
-    ),
-  },
-  {
-    id: 'dark', label: 'Dark',
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-      </svg>
-    ),
-  },
-];
-function ThemeToggle() {
-  const [pref, setPref] = useState('system');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    let p = 'system';
-    try { p = localStorage.getItem(THEME_KEY) || 'system'; } catch {}
-    setPref(p);
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    applyTheme(pref);
-    try { localStorage.setItem(THEME_KEY, pref); } catch {}
-    if (pref !== 'system') return;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => applyTheme('system');
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, [pref, mounted]);
-
-  return (
-    <div className="theme-toggle" role="radiogroup" aria-label="Color theme">
-      {THEME_OPTIONS.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          role="radio"
-          aria-checked={mounted && pref === o.id}
-          aria-label={`${o.label} theme`}
-          title={`${o.label} theme`}
-          className={mounted && pref === o.id ? 'active' : ''}
-          onClick={() => setPref(o.id)}
-        >
-          {o.icon}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-// GitHub brand mark, used in the sign-in pill.
-const GithubMark = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
-    <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.3-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.06.74.8 1.19 1.83 1.19 3.08 0 4.41-2.7 5.38-5.27 5.67.41.35.77 1.05.77 2.13v3.16c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" />
-  </svg>
-);
-
 export default function Home() {
   const [done, setDone] = useState({});
   const [openId, setOpenId] = useState(null);
@@ -462,11 +378,6 @@ export default function Home() {
     }
   }
 
-  function askAlpie(prompt) {
-    setChatOpen(true);
-    sendChat(prompt);
-  }
-
   async function logout() {
     try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
     setUser(null);
@@ -499,6 +410,7 @@ export default function Home() {
           </a>
 
           <div className="nav-actions" style={{ marginLeft: 'auto' }}>
+            <a href="/organizers" className="nav-link-organizers">For Organizers</a>
             <ThemeToggle />
             {hereNow !== null && (
               <span className="presence" aria-live="polite" title={`${hereNow} ${hereNow === 1 ? 'person' : 'people'} here right now`}>
@@ -754,17 +666,14 @@ export default function Home() {
               <h3 className="organize-title">Host Preptember for your community.</h3>
               <p className="organize-sub">
                 Meetup, campus club or Discord — bring people through their first contribution together.
-                Get a ready-made organizer&apos;s guide (agenda, checklist, talking points) drafted by Alpie in seconds.
+                The <strong>For Organizers</strong> page has a ready-to-run instructor-led agenda, a Community Canvas
+                for co-branded social posts, and prompt templates for featuring your community.
               </p>
             </div>
             <div className="organize-actions">
-              <button
-                type="button"
-                className="organize-btn"
-                onClick={() => askAlpie('Help me prepare an organizer’s guide for hosting a local Preptember contribution session — include a suggested agenda, a prep checklist, talking points for explaining forks and pull requests to newcomers, and tips for helping a group open their first PR to 169Pi/.github.')}
-              >
-                Help me prepare guide<span className="material-symbols-outlined">arrow_forward</span>
-              </button>
+              <a href="/organizers" className="organize-btn">
+                Open the organizer kit<span className="material-symbols-outlined">arrow_forward</span>
+              </a>
               <a href={DISCORD_URL} target="_blank" rel="noreferrer" className="organize-link">
                 Coordinate in Discord ↗
               </a>
@@ -1085,42 +994,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="site-footer">
-        <div className="footer-inner">
-          <div className="footer-grid">
-            <div className="footer-brand">
-              <div className="footer-brand-row">
-                <img src="/alpie-logo.webp" alt="169Pi logo" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-                <span className="footer-brand-name">169Pi Preptember</span>
-              </div>
-              <p className="footer-blurb">
-                Built for Preptember 2026 — an open warm-up and companion to Hacktoberfest. Empowering first-time open-source builders with guided workflows.
-              </p>
-            </div>
-            <div className="footer-col">
-              <span className="footer-col-title">Resources</span>
-              <div className="footer-links">
-                <a href={`https://github.com/${OWNER}/${REPO}`} target="_blank" rel="noreferrer">Alpie-Core GitHub</a>
-                <a href="https://huggingface.co/169Pi/Alpie-Core" target="_blank" rel="noreferrer">Hugging Face Weights</a>
-                <a href="https://playground.169pi.ai/dashboard" target="_blank" rel="noreferrer">Web Playground</a>
-                <a href="https://www.kaggle.com/169pi" target="_blank" rel="noreferrer">Kaggle Notebooks</a>
-              </div>
-            </div>
-            <div className="footer-col">
-              <span className="footer-col-title">Community</span>
-              <div className="footer-links">
-                <a href={DISCORD_URL} target="_blank" rel="noreferrer">Discord Server</a>
-                <a href="#organizers">Organizer Toolkit</a>
-                <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">Source Repository</a>
-              </div>
-            </div>
-          </div>
-          <div className="footer-bar">
-            <span>Built by <a className="strong" href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">@kindavishal</a> for Preptember 2026 · unofficial companion to Hacktoberfest</span>
-            <a href="https://github.com/kindavishal/169pi" target="_blank" rel="noreferrer">github.com/kindavishal/169pi</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
