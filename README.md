@@ -9,8 +9,9 @@ Live at **https://169pi-kappa.vercel.app**
 - Next.js 16 (App Router, JavaScript)
 - Deployed on Vercel
 - Live GitHub stats via the public REST API
-- GitHub OAuth for sign-in and star auto-detection
+- GitHub OAuth for sign-in and checklist auto-detection (star, fork, PR, merge)
 - Alpie chat and entry drafter via a server-side proxy (`/api/alpie`)
+- Light / dark / system theme, with the choice saved per visitor
 
 ## Local dev
 
@@ -67,11 +68,26 @@ An OAuth app allows only one callback URL, so for local sign-in register a secon
 
 - Live star count (Alpie-Core), PR count and contributor count (`.github`)
 - Contributor leaderboard, with bots and AI accounts filtered out
-- 7-step first-contribution walkthrough with expandable help and "before you PR" rules
+- 8-step first-contribution walkthrough (starting from **Step 0: create a GitHub account**) with expandable help, in-browser sub-steps, GitHub screenshot previews and "before you PR" rules
+- Beginner aids: a "no coding, no terminal" banner, inline jargon tooltips and a collapsible glossary
 - Progress saved in `localStorage`
-- Sign in with GitHub, which auto-ticks the Star step
-- Countdown to October 1 and the next bi-weekly merge date
-- "Try Alpie-Core" links to Hugging Face, Ollama, Kaggle and the docs
+- Sign in with GitHub, which auto-ticks the account, Star, Fork, PR and Merged steps from live GitHub state
+- Countdown to the next bi-weekly merge date
+- "Try Alpie-Core": leads with the no-setup options (alpie.ai and the 169pi Playground) and collapses the developer runtimes (Hugging Face, Ollama, Kaggle) plus a docs link
 - Floating "Ask Alpie" chat, proxied server-side
 - "Draft it with Alpie": a form that returns a Markdown entry for `profile/README.md`
+- Creation Studio: a client-side, no-code SVG generator (copy or download the result)
+- "Running a session?" card that drafts an organizer's guide via Alpie
+- Light / dark / system theme switch in the nav
 - Favicons, web manifest and link-preview image
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Note: if you're here for the Preptember
+campaign itself (adding your entry to the 169pi profile), that goes to
+[`169Pi/.github`](https://github.com/169Pi/.github), not this repo — the live site
+walks you through it.
+
+## License
+
+Released under the [MIT License](LICENSE).
